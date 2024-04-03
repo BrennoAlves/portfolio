@@ -10,12 +10,22 @@ import { ViewTransitions } from "astro:transitions";
       <header
         class="flex w-full flex-col gap-3 md:gap-2 md:flex-row md:justify-between pb-5 md:pb-0"
       >
-        <a href="/" class="text-xl">Bem-vindo</a>
+        <a href="/" class="text-xl">Projetos</a>
         <nav class="text-sm custom-breadcrumbs"></nav>
       </header>
       <slot />
     </div>
+
     <style is:global>
+      /* Estilos globais */
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+
+      /* Estilos específicos para DaisyUI */
+      @daisyUI components;
+
+      /* Estilos customizados */
       .custom-breadcrumbs {
         max-width: 100%;
         overflow-x: auto;

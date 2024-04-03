@@ -1,28 +1,8 @@
 ---
 import { ViewTransitions } from "astro:transitions";
-import {
-  TITULO_SITE,
-  DESCRICAO_SITE,
-  OG_TITULO,
-  OG_DESCRICAO,
-  OG_TIPO,
-} from "../consts";
 ---
 
-<!doctype html>
-<html class="bg-base-100 text-base-content overflow-y-scroll" lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/icon.png" />
-    <title>{TITULO_SITE}</title>
-    <meta name="description" content={DESCRICAO_SITE} />
-    <meta property="og:title" content={OG_TITULO} />
-    <meta property="og:description" content={OG_DESCRICAO} />
-    <meta property="og:type" content={OG_TIPO} />
-    <meta property="og:url" content={Astro.request.url} />
-    <ViewTransitions />
-  </head>
+<html>
   <body>
     <div
       class="mx-auto flex min-h-screen max-w-4xl flex-col gap-9 px-10 py-8 md:gap-20 md:py-16"

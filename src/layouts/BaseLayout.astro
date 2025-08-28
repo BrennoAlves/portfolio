@@ -1,0 +1,54 @@
+---
+---
+
+<div class="mx-auto flex min-h-screen max-w-4xl flex-col gap-9 px-10 py-8 md:gap-20 md:py-16">
+  <header class="flex w-full flex-col gap-3 md:gap-2 md:flex-row md:justify-between pb-5 md:pb-0">
+    <a href="/" class="text-xl">Bem-vindo</a>
+    <nav class="text-sm custom-breadcrumbs">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/projetos">Projetos</a></li>
+      </ul>
+    </nav>
+  </header>
+  <slot />
+</div>
+
+<style is:global>
+  .custom-breadcrumbs {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-top: 0.5%;
+  }
+  .custom-breadcrumbs > ul {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    min-height: min-content;
+  }
+  .custom-breadcrumbs > ul > li {
+    display: flex;
+    align-items: center;
+  }
+  .custom-breadcrumbs > ul > li > a {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+  }
+  @media (hover: hover) {
+    .custom-breadcrumbs > ul > li > a:hover {
+      text-decoration-line: underline;
+    }
+  }
+  .custom-breadcrumbs > ul > li > a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  .custom-breadcrumbs > ul > li + *:before {
+    content: "/";
+    margin-left: 0.5rem;
+    margin-right: 0.75rem;
+    display: block;
+    opacity: 0.4;
+  }
+</style>

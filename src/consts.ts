@@ -6,7 +6,7 @@ export const DESCRICAO_SITE = "Um portfolio minimalista";
 export const OG_TITULO = TITULO_SITE;
 export const OG_DESCRICAO = DESCRICAO_SITE;
 export const OG_TIPO = "Site pessoal";
-export const OG_IMAGE = "";
+export const OG_IMAGE = "/perfil.png";
 
 interface projetos {
   projetos: {
@@ -19,13 +19,21 @@ interface projetos {
 
 export const projetosPreenchido: projetos = {
   projetos: {
-    "996.ICU": {
-      url: "https://github.com/996icu/996.ICU",
-      tags: ["ccp", "chinese", "overwork", "labor", "996"],
+    "E-commerce Platform": {
+      url: "https://github.com/dataclix/ecommerce",
+      tags: ["react", "typescript", "tailwind", "stripe"],
     },
-    Linux: {
-      url: "https://github.com/torvalds/linux",
-      tags: ["c", "kernel", "unix", "os"],
+    "AI Chat Assistant": {
+      url: "https://github.com/dataclix/ai-chat",
+      tags: ["python", "openai", "fastapi", "websockets"],
+    },
+    "Mobile Banking App": {
+      url: "https://github.com/dataclix/mobile-bank",
+      tags: ["react-native", "typescript", "firebase"],
+    },
+    "Data Analytics Dashboard": {
+      url: "https://github.com/dataclix/analytics",
+      tags: ["vue", "d3js", "python", "postgresql"],
     },
   },
 };

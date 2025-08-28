@@ -1,12 +1,7 @@
 ---
 import { ViewTransitions } from "astro:transitions";
-import {
-  TITULO_SITE,
-  DESCRICAO_SITE,
-  OG_TITULO,
-  OG_DESCRICAO,
-  OG_TIPO,
-} from "../consts";
+import { TITULO_SITE, DESCRICAO_SITE, OG_TITULO, OG_DESCRICAO, OG_TIPO, OG_IMAGE } from "../consts";
+import BaseLayout from "./BaseLayout.astro";
 ---
 
 <!doctype html>
@@ -20,74 +15,13 @@ import {
     <meta property="og:title" content={OG_TITULO} />
     <meta property="og:description" content={OG_DESCRICAO} />
     <meta property="og:type" content={OG_TIPO} />
+    <meta property="og:image" content={OG_IMAGE} />
     <meta property="og:url" content={Astro.request.url} />
     <ViewTransitions />
   </head>
   <body>
-    <div
-      class="mx-auto flex min-h-screen max-w-4xl flex-col gap-9 px-10 py-8 md:gap-20 md:py-16"
-    >
-      <header
-        class="flex w-full flex-col gap-3 md:gap-2 md:flex-row md:justify-between pb-5 md:pb-0"
-      >
-        <a href="/" class="text-xl">Bem-vindo</a>
-        <nav class="text-sm custom-breadcrumbs"></nav>
-      </header>
+    <BaseLayout>
       <slot />
-    </div>
-    <style is:global>
-      .custom-breadcrumbs {
-        max-width: 100%;
-        overflow-x: auto;
-        padding-top: 0.5%;
-      }
-
-      .custom-breadcrumbs > ul {
-        display: flex;
-        align-items: center;
-        white-space: nowrap;
-        min-height: min-content;
-      }
-
-      .custom-breadcrumbs > ul > li {
-        display: flex;
-        align-items: center;
-      }
-
-      .custom-breadcrumbs > ul > li > a {
-        display: flex;
-        cursor: pointer;
-        align-items: center;
-      }
-
-      @media (hover: hover) {
-        .custom-breadcrumbs > ul > li > a:hover {
-          text-decoration-line: underline;
-        }
-      }
-
-      .custom-breadcrumbs > ul > li > a:focus {
-        outline: 2px solid transparent;
-        outline-offset: 2px;
-      }
-
-      .custom-breadcrumbs > ul > li > a:focus-visible {
-        outline: 2px solid currentColor;
-        outline-offset: 2px;
-      }
-
-      .custom-breadcrumbs > ul > li + *:before {
-        content: "/";
-        margin-left: 0.5rem;
-        margin-right: 0.75rem;
-        display: block;
-        opacity: 0.4;
-        background-color: transparent;
-      }
-
-      [dir="rtl"] .custom-breadcrumbs > ul > li + *:before {
-        --tw-rotate: -180deg;
-      }
-    </style>
+    </BaseLayout>
   </body>
 </html>

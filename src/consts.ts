@@ -1,4 +1,4 @@
-export const TITULO_SITE = "Brenno Alves - Portfólio";
+export const TITULO_SITE = "Brenno Alves";
 export const DESCRICAO_SITE = "Portfólio de Brenno Alves, CEO da Dataclix";
 
 export const projetos = {

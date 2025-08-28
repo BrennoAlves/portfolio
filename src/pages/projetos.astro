@@ -5,20 +5,26 @@ import { projetosPreenchido } from "../consts";
 
 <ProjetosLayout>
   <main>
-    <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-12">
       <h1 class="text-3xl">Projetos</h1>
       <div class="grid gap-6 md:grid-cols-2">
         {Object.entries(projetosPreenchido.projetos).map(([nome, projeto]) => (
-          <div class="card bg-base-200 shadow-xl">
+          <div class="card bg-base-100 shadow-sm border border-base-200">
             <div class="card-body">
-              <h2 class="card-title">{nome}</h2>
-              <div class="flex flex-wrap gap-2 mb-4">
-                {projeto.tags.map((tag) => (
-                  <span class="badge badge-primary badge-sm">{tag}</span>
-                ))}
-              </div>
-              <div class="card-actions justify-end">
-                <a href={projeto.url} target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+              <h2 class="card-title text-lg">{nome}</h2>
+              <p class="text-sm opacity-70">Projeto desenvolvido pela Dataclix com foco em soluções modernas e eficientes.</p>
+              <div class="card-actions justify-between items-center mt-4">
+                <div class="flex flex-wrap gap-1">
+                  {projeto.tags.map((tag) => (
+                    <div class="badge badge-outline badge-sm">{tag}</div>
+                  ))}
+                </div>
+                <a 
+                  href={projeto.url} 
+                  target="_blank" 
+                  rel="noopener" 
+                  class="btn btn-primary btn-sm"
+                >
                   Ver Projeto
                 </a>
               </div>

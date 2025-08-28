@@ -1,6 +1,6 @@
 ---
 import { ViewTransitions } from "astro:transitions";
-import { TITULO_SITE, DESCRICAO_SITE, OG_TITULO, OG_DESCRICAO, OG_TIPO, OG_IMAGE } from "../consts";
+import { TITULO_SITE, DESCRICAO_SITE } from "../consts";
 import BaseLayout from "./BaseLayout.astro";
 ---
 
@@ -12,12 +12,32 @@ import BaseLayout from "./BaseLayout.astro";
     <link rel="icon" type="image/svg+xml" href="/icon.png" />
     <title>{TITULO_SITE}</title>
     <meta name="description" content={DESCRICAO_SITE} />
-    <meta property="og:title" content={OG_TITULO} />
-    <meta property="og:description" content={OG_DESCRICAO} />
-    <meta property="og:type" content={OG_TIPO} />
-    <meta property="og:image" content={OG_IMAGE} />
-    <meta property="og:url" content={Astro.request.url} />
     <ViewTransitions />
+    <style>
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 0.3s;
+        animation-timing-function: ease-in-out;
+      }
+      
+      ::view-transition-old(root) {
+        animation-name: slideOut;
+      }
+      
+      ::view-transition-new(root) {
+        animation-name: slideIn;
+      }
+      
+      @keyframes slideOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(-20px); }
+      }
+      
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+    </style>
   </head>
   <body>
     <BaseLayout>

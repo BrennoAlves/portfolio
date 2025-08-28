@@ -1,10 +1,14 @@
 ---
+const { pathname } = Astro.url;
+const isProjetos = pathname.includes('/projetos');
+const titulo = isProjetos ? 'Criando' : 'Bem-vindo';
 ---
 
-<div class="mx-auto flex min-h-screen max-w-4xl flex-col gap-9 px-10 py-8 md:gap-20 md:py-16">
-  <header class="flex w-full flex-col gap-3 md:gap-2 md:flex-row md:justify-between pb-5 md:pb-0">
-    <a href="/" class="text-xl">Bem-vindo</a>
-    <nav class="text-sm custom-breadcrumbs">
+<div class="loading-bar"></div>
+<div class="container">
+  <header class="header">
+    <a href="/" class="logo">{titulo}</a>
+    <nav class="nav">
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/projetos">Projetos</a></li>
@@ -15,40 +19,129 @@
 </div>
 
 <style is:global>
-  .custom-breadcrumbs {
-    max-width: 100%;
-    overflow-x: auto;
+  .btn {
+    border-radius: 80px;
+  }
+  
+  .loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+    transform: translateX(-100%);
+    animation: loading 2s ease-in-out;
+    z-index: 9999;
+  }
+  
+  @keyframes loading {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(0%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  .container {
+    max-width: 64rem;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+    padding: 2rem 2.5rem;
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  @media (min-width: 768px) {
+    .container {
+      gap: 5rem;
+      padding: 4rem 2.5rem;
+    }
+  }
+  
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-bottom: 1.25rem;
+  }
+  
+  @media (min-width: 768px) {
+    .header {
+      flex-direction: row;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding-bottom: 0;
+    }
+  }
+  
+  .logo {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .nav {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
     padding-top: 0.5%;
   }
-  .custom-breadcrumbs > ul {
+  
+  .nav ul {
     display: flex;
     align-items: center;
     white-space: nowrap;
     min-height: min-content;
   }
-  .custom-breadcrumbs > ul > li {
+  
+  .nav li {
     display: flex;
     align-items: center;
   }
-  .custom-breadcrumbs > ul > li > a {
+  
+  .nav a {
     display: flex;
     cursor: pointer;
     align-items: center;
   }
-  @media (hover: hover) {
-    .custom-breadcrumbs > ul > li > a:hover {
-      text-decoration-line: underline;
+  
+  .nav a:hover {
+    text-decoration: underline;
+  }
+  
+  .nav li + li:before {
+    content: "/";
+    margin: 0 0.5rem 0 0.75rem;
+    opacity: 0.4;
+  }
+  
+  @keyframes fadeIn {
+    from { 
+      opacity: 0; 
+      transform: translateY(20px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
     }
   }
-  .custom-breadcrumbs > ul > li > a:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
+  
+  .card-animate {
+    animation: cardIn 0.6s ease-out both;
   }
-  .custom-breadcrumbs > ul > li + *:before {
-    content: "/";
-    margin-left: 0.5rem;
-    margin-right: 0.75rem;
-    display: block;
-    opacity: 0.4;
+  
+  .card-animate:nth-child(1) { animation-delay: 0.1s; }
+  .card-animate:nth-child(2) { animation-delay: 0.2s; }
+  .card-animate:nth-child(3) { animation-delay: 0.3s; }
+  .card-animate:nth-child(4) { animation-delay: 0.4s; }
+  
+  @keyframes cardIn {
+    from { 
+      opacity: 0; 
+      transform: translateY(30px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
   }
 </style>

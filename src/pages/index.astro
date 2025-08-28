@@ -1,107 +1,70 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { projetosPreenchido } from "../consts";
+import { projetosDestaque } from "../consts";
 ---
 
 <Layout>
   <main>
-    <div class="flex flex-col gap-20">
+    <div class="flex flex-col gap-12">
       <article class="md:flex-row-reverse md:justify-end md:gap-12">
         <div class="flex flex-col sm:flex-row gap-4">
-          <div class="col-span-2 flex flex-col gap-6 md:gap-8 my-auto">
+          <div class="col-span-2 flex flex-col gap-4 md:gap-6 my-auto">
             <h1 class="text-3xl">Oi, sou o Brenno!</h1>
-            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify">
-              Sou o <a
-                class="font-normal text-primary"
-                href="https://www.linkedin.com/company/dataclix/"
-                >CEO da Dataclix</a
-              > desde agosto de 2023. Atualmente, nossa empresa está focada no desenvolvimento
-              Web, Mobile e na implementação de soluções de IA<strong>
-              </strong>. Fora desse universo profissional, sou estudante do
-              último período de Ciências Econômicas e um entusiasta de pão
-              artesanal.
+            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70">
+              Sou o <a class="font-normal text-primary" href="https://www.linkedin.com/in/brennonogueiraalves/">CEO da Dataclix</a> desde agosto de 2023. Atualmente, nossa empresa está focada no desenvolvimento Web, Mobile e na implementação de soluções de IA. Fora desse universo profissional, sou estudante do último período de Ciências Econômicas e um entusiasta de pão artesanal.
             </p>
-            <div class="custom-breadcrumbs">
+            <div class="nav">
               <ul>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/brennonogueiraalves/"
-                    rel="noreferrer"
-                    target="_blank"
-                    aria-label="Ícone que direciona para o Linkedin do Brenno"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M20.94 0H3.06A3.06 3.06 0 0 0 0 3.06v17.88A3.06 3.06 0 0 0 3.06 24h17.88A3.06 3.06 0 0 0 24 20.94V3.06A3.06 3.06 0 0 0 20.94 0zM7.5 18.57H4.5V9h3v9.57zM6 7.5a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1-1.5 1.5zm12.57 11.07h-3V14c0-1.17-.42-1.97-1.47-1.97s-1.7.68-1.7 1.97v4.07h-3V9h3v1.09h.09a2.53 2.53 0 0 1 2.26-1.25c2.55 0 3.31 1.68 3.31 4.08v4.65z"
-                      ></path>
+                  <a href="https://www.linkedin.com/in/brennonogueiraalves/" rel="noreferrer" target="_blank" aria-label="LinkedIn do Brenno">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://github.com/BrennoAlves"
-                    rel="noreferrer"
-                    target="_blank"
-                    arial-label="Ícone que direciona para o GitHub do Brenno"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M12 .29c-6.63 0-12 5.37-12 12 0 5.3 3.44 9.8 8.22 11.4.6.11.82-.26.82-.58s0-1.07 0-2.13c-3.34.72-4.04-1.62-4.04-1.62-.54-1.38-1.32-1.75-1.32-1.75-1.08-.74.08-.73.08-.73 1.2.09 1.84 1.23 1.84 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.23-3.22-.13-.3-.53-1.52.1-3.17 0 0 1-.32 3.3 1.23 1-.28 2-.42 3-.42s2 .14 3 .42c2.3-1.55 3.3-1.23 3.3-1.23.64 1.65.23 2.87.11 3.17.77.85 1.23 1.91 1.23 3.22 0 4.61-2.82 5.63-5.49 5.93.43.37.81 1.1.81 2.22 0 1.61 0 2.91 0 3.31 0 .32.22.7.83.58 4.77-1.6 8.2-6.1 8.2-11.4 0-6.63-5.37-12-12-12z"
-                      ></path>
+                  <a href="https://github.com/BrennoAlves" rel="noreferrer" target="_blank" aria-label="GitHub do Brenno">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
                   </a>
                 </li>
               </ul>
             </div>
           </div>
-          <div class="mx-auto">
+          <div class="mx-auto mt-6 sm:mt-0">
             <div class="avatar flex-items-center mx-auto sm:flex-row">
               <div class="w-60 rounded">
-                <img src="/perfil.png" alt="Fotinha versão Stardew Valley" />
+                <img src="/perfil.png" alt="Foto do Brenno" loading="lazy" decoding="async" />
               </div>
             </div>
           </div>
         </div>
       </article>
       
-      <section class="flex flex-col gap-8">
-        <div class="flex flex-col gap-4">
+      <section class="flex flex-col gap-6">
+        <div class="text-center">
           <h2 class="text-2xl">Projetos em Destaque</h2>
-          <p class="opacity-70 leading-6">
-            Confira alguns dos principais projetos desenvolvidos pela Dataclix, 
-            focados em soluções web, mobile e inteligência artificial.
-          </p>
         </div>
         
         <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-          {Object.entries(projetosPreenchido.projetos).slice(0, 2).map(([nome, projeto]) => (
-            <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl">
+          {projetosDestaque.map(([nome, projeto]) => (
+            <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl card-animate">
               <div class="card-body p-5 flex flex-col">
                 <div class="flex items-start justify-between mb-3">
                   <h3 class="text-lg font-semibold flex-1">{nome}</h3>
-                  <div class="badge bg-primary/20 text-primary border-primary/30 badge-sm">Dataclix</div>
                 </div>
                 
                 <p class="text-base-content/70 text-sm leading-relaxed mb-4">
-                  Projeto desenvolvido com tecnologias modernas, focado em performance e experiência do usuário.
+                  {projeto.descricao}
                 </p>
                 
-                <div class="flex flex-wrap gap-1 mb-4">
-                  {projeto.tags.slice(0, 3).map((tag, index) => (
-                    <div class={`badge badge-xs border-0 ${
-                      index % 4 === 0 ? 'bg-primary/20 text-primary' :
-                      index % 4 === 1 ? 'bg-secondary/20 text-secondary' :
-                      index % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {projeto.tags.slice(0, 3).map((tag, indice) => (
+                    <div class={`badge border-0 ${
+                      indice % 4 === 0 ? 'bg-primary/20 text-primary' :
+                      indice % 4 === 1 ? 'bg-secondary/20 text-secondary' :
+                      indice % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
                     }`}>
                       {tag}
                     </div>
@@ -109,12 +72,7 @@ import { projetosPreenchido } from "../consts";
                 </div>
                 
                 <div class="card-actions justify-end mt-auto">
-                  <a 
-                    href={projeto.url} 
-                    target="_blank" 
-                    rel="noopener" 
-                    class="btn btn-outline btn-xs"
-                  >
+                  <a href={projeto.url} target="_blank" rel="noopener" class="btn btn-outline btn-sm">
                     Ver Projeto
                   </a>
                 </div>
@@ -124,7 +82,7 @@ import { projetosPreenchido } from "../consts";
         </div>
         
         <div class="text-center mt-4">
-          <a href="/projetos" class="btn btn-outline">Ver Todos os Projetos</a>
+          <a href="/projetos" class="btn btn-outline">Outros Projetos</a>
         </div>
       </section>
     </div>

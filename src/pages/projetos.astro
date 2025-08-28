@@ -1,32 +1,35 @@
 ---
 import ProjetosLayout from "../layouts/Projetos.astro";
-import { projetosPreenchido } from "../consts";
+import { projetos } from "../consts";
 ---
 
 <ProjetosLayout>
   <main>
     <div class="flex flex-col gap-12">
-      <h1 class="text-3xl">Projetos</h1>
+      <div class="flex flex-col gap-6 md:gap-8">
+        <h1 class="text-3xl">Projetos</h1>
+        <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70">
+          Aqui estão projetos que desenvolvi para testar conceitos, ferramentas e experimentar soluções.
+        </p>
+      </div>
       <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-        {Object.entries(projetosPreenchido.projetos).map(([nome, projeto]) => (
-          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
+        {Object.entries(projetos).map(([nome, projeto]) => (
+          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-2xl card-animate">
             <div class="card-body p-6 flex flex-col">
               <div class="flex items-start justify-between mb-3">
                 <h2 class="card-title text-xl font-semibold flex-1">{nome}</h2>
-                <div class="badge bg-primary/20 text-primary border-primary/30">Dataclix</div>
               </div>
               
               <p class="text-base-content/70 text-sm leading-relaxed mb-4">
-                Projeto desenvolvido com tecnologias modernas, focado em performance, 
-                escalabilidade e experiência do usuário.
+                {projeto.descricao}
               </p>
               
               <div class="flex flex-wrap gap-2 mb-6">
-                {projeto.tags.map((tag, index) => (
+                {projeto.tags.map((tag, indice) => (
                   <div class={`badge border-0 ${
-                    index % 4 === 0 ? 'bg-primary/20 text-primary' :
-                    index % 4 === 1 ? 'bg-secondary/20 text-secondary' :
-                    index % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
+                    indice % 4 === 0 ? 'bg-primary/20 text-primary' :
+                    indice % 4 === 1 ? 'bg-secondary/20 text-secondary' :
+                    indice % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
                   }`}>
                     {tag}
                   </div>
@@ -34,12 +37,7 @@ import { projetosPreenchido } from "../consts";
               </div>
               
               <div class="card-actions justify-end mt-auto">
-                <a 
-                  href={projeto.url} 
-                  target="_blank" 
-                  rel="noopener" 
-                  class="btn btn-outline btn-sm"
-                >
+                <a href={projeto.url} target="_blank" rel="noopener" class="btn btn-outline btn-sm">
                   Ver Projeto
                 </a>
               </div>

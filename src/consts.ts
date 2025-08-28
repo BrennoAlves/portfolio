@@ -1,39 +1,39 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
+export const TITULO_SITE = "Brenno Alves - Portfólio";
+export const DESCRICAO_SITE = "Portfólio de Brenno Alves, CEO da Dataclix";
 
-export const TITULO_SITE = "Brenno Alves";
-export const DESCRICAO_SITE = "Um portfolio minimalista";
-export const OG_TITULO = TITULO_SITE;
-export const OG_DESCRICAO = DESCRICAO_SITE;
-export const OG_TIPO = "Site pessoal";
-export const OG_IMAGE = "/perfil.png";
-
-interface projetos {
-  projetos: {
-    [name: string]: {
-      url: string;
-      tags: string[];
-    };
-  };
-}
-
-export const projetosPreenchido: projetos = {
-  projetos: {
-    "E-commerce Platform": {
-      url: "https://github.com/dataclix/ecommerce",
-      tags: ["react", "typescript", "tailwind", "stripe"],
-    },
-    "AI Chat Assistant": {
-      url: "https://github.com/dataclix/ai-chat",
-      tags: ["python", "openai", "fastapi", "websockets"],
-    },
-    "Mobile Banking App": {
-      url: "https://github.com/dataclix/mobile-bank",
-      tags: ["react-native", "typescript", "firebase"],
-    },
-    "Data Analytics Dashboard": {
-      url: "https://github.com/dataclix/analytics",
-      tags: ["vue", "d3js", "python", "postgresql"],
-    },
+export const projetos = {
+  "Analisador Fiscal OCR": {
+    url: "https://github.com/BrennoAlves/reembolsinho-amazon-q",
+    descricao: "Aplicação que automatiza análise de canhotos de maquininha usando AWS Textract, extraindo dados fiscais e categorizando despesas automaticamente.",
+    tags: ["Python", "AWS Textract", "OCR", "BrasilAPI"]
   },
+  "Corretor de Localidades": {
+    url: "https://github.com/BrennoAlves/corretor-localidade", 
+    descricao: "Script que usa modelo all-MiniLM-L6-v2 para corrigir automaticamente erros semânticos em nomes de bairros e cidades usando similaridade de cosseno.",
+    tags: ["Python", "Machine Learning", "NLP", "SentenceTransformer"]
+  },
+  "Análise ENEM MG 2019": {
+    url: "https://github.com/BrennoAlves/ENEM-MG-2019",
+    descricao: "Análise estatística completa dos dados do ENEM 2019 de Minas Gerais, desenvolvida para artigo acadêmico em Técnicas de Pesquisa em Economia.",
+    tags: ["Jupyter Notebook", "Python", "Pandas", "Data Science"]
+  },
+  "WebScraping Rua CEP": {
+    url: "https://github.com/BrennoAlves/webscraping-Rua-cep",
+    descricao: "Ferramenta de webscraping para extrair dados de nomes de bairros do site ruacep.com.br, útil para normalização de dados geográficos.",
+    tags: ["Python", "Web Scraping", "BeautifulSoup", "Requests"]
+  },
+  "Preenchedor Forms": {
+    url: "https://github.com/BrennoAlves/preenchedor",
+    descricao: "Script Python para automatizar preenchimento de Google Forms de forma aleatória ou com dados específicos, útil para testes e automação.",
+    tags: ["Python", "Selenium", "Automação", "Google Forms"]
+  },
+  "CLI Tools": {
+    url: "https://github.com/BrennoAlves/cli-tools",
+    descricao: "Coleção de ferramentas de linha de comando desenvolvidas em Python para automatizar tarefas do dia a dia e aumentar produtividade.",
+    tags: ["Python", "CLI", "Automação", "Ferramentas"]
+  }
 };
+
+export const projetosDestaque = Object.entries(projetos).filter(([nome]) => 
+  nome === "Corretor de Localidades" || nome === "CLI Tools"
+);

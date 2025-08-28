@@ -83,14 +83,18 @@ import { projetosPreenchido } from "../consts";
           </p>
         </div>
         
-        <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {Object.entries(projetosPreenchido.projetos).slice(0, 3).map(([nome, projeto]) => (
+        <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+          {Object.entries(projetosPreenchido.projetos).slice(0, 2).map(([nome, projeto]) => (
             <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl">
-              <div class="card-body p-5">
+              <div class="card-body p-5 flex flex-col">
                 <div class="flex items-start justify-between mb-3">
-                  <h3 class="text-lg font-semibold">{nome}</h3>
+                  <h3 class="text-lg font-semibold flex-1">{nome}</h3>
                   <div class="badge bg-primary/20 text-primary border-primary/30 badge-sm">Dataclix</div>
                 </div>
+                
+                <p class="text-base-content/70 text-sm leading-relaxed mb-4">
+                  Projeto desenvolvido com tecnologias modernas, focado em performance e experiência do usuário.
+                </p>
                 
                 <div class="flex flex-wrap gap-1 mb-4">
                   {projeto.tags.slice(0, 3).map((tag, index) => (
@@ -104,7 +108,7 @@ import { projetosPreenchido } from "../consts";
                   ))}
                 </div>
                 
-                <div class="card-actions justify-end">
+                <div class="card-actions justify-end mt-auto">
                   <a 
                     href={projeto.url} 
                     target="_blank" 

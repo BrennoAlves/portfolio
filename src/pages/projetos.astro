@@ -7,13 +7,13 @@ import { projetosPreenchido } from "../consts";
   <main>
     <div class="flex flex-col gap-12">
       <h1 class="text-3xl">Projetos</h1>
-      <div class="grid gap-8 md:grid-cols-2">
+      <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
         {Object.entries(projetosPreenchido.projetos).map(([nome, projeto]) => (
-          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
             <div class="card-body p-6">
               <div class="flex items-start justify-between mb-3">
                 <h2 class="card-title text-xl font-semibold">{nome}</h2>
-                <div class="badge badge-primary badge-sm">Dataclix</div>
+                <div class="badge bg-primary/20 text-primary border-primary/30">Dataclix</div>
               </div>
               
               <p class="text-base-content/70 text-sm leading-relaxed mb-4">
@@ -23,10 +23,10 @@ import { projetosPreenchido } from "../consts";
               
               <div class="flex flex-wrap gap-2 mb-6">
                 {projeto.tags.map((tag, index) => (
-                  <div class={`badge badge-outline ${
-                    index % 4 === 0 ? 'badge-primary' :
-                    index % 4 === 1 ? 'badge-secondary' :
-                    index % 4 === 2 ? 'badge-accent' : 'badge-info'
+                  <div class={`badge border-0 ${
+                    index % 4 === 0 ? 'bg-primary/20 text-primary' :
+                    index % 4 === 1 ? 'bg-secondary/20 text-secondary' :
+                    index % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
                   }`}>
                     {tag}
                   </div>
@@ -38,13 +38,8 @@ import { projetosPreenchido } from "../consts";
                   href={projeto.url} 
                   target="_blank" 
                   rel="noopener" 
-                  class="btn btn-primary btn-sm gap-2"
+                  class="btn btn-outline btn-sm"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15,3 21,3 21,9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
                   Ver Projeto
                 </a>
               </div>

@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { projetosPreenchido } from "../consts";
 ---
 
 <Layout>
@@ -73,14 +74,53 @@ import Layout from "../layouts/Layout.astro";
         </div>
       </article>
       
-      <section class="flex flex-col gap-6">
-        <h2 class="text-2xl">Projetos em Destaque</h2>
-        <p class="opacity-70 leading-6">
-          Confira alguns dos principais projetos desenvolvidos pela Dataclix, 
-          focados em soluções web, mobile e inteligência artificial.
-        </p>
-        <div class="text-center">
-          <a href="/projetos" class="btn btn-primary">Ver Todos os Projetos</a>
+      <section class="flex flex-col gap-8">
+        <div class="flex flex-col gap-4">
+          <h2 class="text-2xl">Projetos em Destaque</h2>
+          <p class="opacity-70 leading-6">
+            Confira alguns dos principais projetos desenvolvidos pela Dataclix, 
+            focados em soluções web, mobile e inteligência artificial.
+          </p>
+        </div>
+        
+        <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {Object.entries(projetosPreenchido.projetos).slice(0, 3).map(([nome, projeto]) => (
+            <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl">
+              <div class="card-body p-5">
+                <div class="flex items-start justify-between mb-3">
+                  <h3 class="text-lg font-semibold">{nome}</h3>
+                  <div class="badge bg-primary/20 text-primary border-primary/30 badge-sm">Dataclix</div>
+                </div>
+                
+                <div class="flex flex-wrap gap-1 mb-4">
+                  {projeto.tags.slice(0, 3).map((tag, index) => (
+                    <div class={`badge badge-xs border-0 ${
+                      index % 4 === 0 ? 'bg-primary/20 text-primary' :
+                      index % 4 === 1 ? 'bg-secondary/20 text-secondary' :
+                      index % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
+                    }`}>
+                      {tag}
+                    </div>
+                  ))}
+                </div>
+                
+                <div class="card-actions justify-end">
+                  <a 
+                    href={projeto.url} 
+                    target="_blank" 
+                    rel="noopener" 
+                    class="btn btn-outline btn-xs"
+                  >
+                    Ver Projeto
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div class="text-center mt-4">
+          <a href="/projetos" class="btn btn-outline">Ver Todos os Projetos</a>
         </div>
       </section>
     </div>

@@ -1,0 +1,325 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { TITULO_SITE } from "../../consts";
+import { getEntry } from 'astro:content';
+
+const entry = await getEntry('pesquisas', 'distribuicao-mcmv');
+if (!entry) {
+  throw new Error('Pesquisa não encontrada');
+}
+const { Content } = await entry.render();
+const { titulo, subtitulo, tags, data } = entry.data;
+---
+
+<Layout title={`${titulo} | ${TITULO_SITE}`}>
+  <article class="max-w-4xl mx-auto px-4 py-12 animate-fade-in">
+
+    {/* Header */}
+    <header class="mb-16 border-b border-base-300 pb-10">
+      <div class="flex flex-wrap gap-2 mb-8">
+        {tags.map((tag, i) => (
+          <div class={`badge badge-lg border-0 font-medium ${
+            i % 4 === 0 ? 'bg-primary/20 text-primary' :
+            i % 4 === 1 ? 'bg-secondary/20 text-secondary' :
+            i % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
+          }`}>
+            {tag}
+          </div>
+        ))}
+        <div class="badge badge-lg border-0 bg-warning/20 text-warning font-medium">
+          {data}
+        </div>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-extrabold text-base-content leading-[1.1] mb-8 tracking-tight">
+        {titulo}
+      </h1>
+      <p class="text-xl md:text-2xl opacity-90 leading-relaxed font-light">
+        {subtitulo}
+      </p>
+    </header>
+
+    {/* Conteúdo do Markdown */}
+    <div class="prose-custom max-w-none">
+      <Content />
+    </div>
+
+    {/* Metodologia Expansível */}
+    <section class="text-sm mt-12 pt-8 border-t border-base-300">
+      <details class="bg-base-200 rounded-xl p-6 cursor-pointer">
+        <summary class="font-semibold text-base mb-4 cursor-pointer select-none hover:text-primary transition-colors">
+          📊 Metodologia e Fontes de Dados
+        </summary>
+
+        <div class="space-y-5 text-base-content/70 mt-6">
+          <div>
+            <p class="font-semibold mb-2">Bases de dados utilizadas:</p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Contratos do Programa Minha Casa, Minha Vida (Ministério do Desenvolvimento Regional, 2009-2020)</li>
+              <li>Estimativas populacionais dos municípios (IBGE/Censo 2010 e projeções)</li>
+              <li>Malhas geográficas municipais (IBGE)</li>
+            </ul>
+          </div>
+
+          <div>
+            <p class="font-semibold mb-2">Ferramentas e técnicas:</p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>Python (Pandas, GeoPandas, Matplotlib, Seaborn) para limpeza, processamento e visualização</li>
+              <li>Regressão linear com transformação logarítmica para análise comparativa entre municípios de diferentes portes</li>
+              <li>Mapas de calor (heatmaps) para visualização espacial da distribuição</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+    </section>
+
+  </article>
+</Layout>
+
+<style is:global>
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Estilos do conteúdo markdown */
+  .prose-custom {
+    color: hsl(var(--bc) / 0.8);
+  }
+
+  .prose-custom h2 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    color: hsl(var(--bc));
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose-custom h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--bc));
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose-custom p {
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose-custom strong {
+    font-weight: 600;
+    color: hsl(var(--bc));
+  }
+
+  .prose-custom img {
+    border-radius: 1rem;
+    width: 100%;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    border: 1px solid hsl(var(--b3));
+    margin: 2.5rem 0;
+  }
+
+  .prose-custom ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-bottom: 1.5rem;
+    margin-left: 1rem;
+  }
+
+  .prose-custom li {
+    margin-bottom: 0.5rem;
+    line-height: 1.75;
+  }
+
+  .prose-custom hr {
+    border-top: 1px solid hsl(var(--b3));
+    margin: 3rem 0;
+  }
+
+  /* Seção de Principais Descobertas */
+  .prose-custom > h2:first-of-type + h3 {
+    background: hsl(var(--b2));
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-top: 2rem;
+  }
+
+  /* Imagens clicáveis */
+  .prose-custom img {
+    cursor: zoom-in;
+    transition: transform 0.2s;
+  }
+
+  .prose-custom img:hover {
+    transform: scale(1.02);
+  }
+
+  /* Modal para imagens */
+  .image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    cursor: zoom-out;
+  }
+
+  .image-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .image-modal img {
+    max-width: 95%;
+    max-height: 95%;
+    object-fit: contain;
+    cursor: grab;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease-out;
+    touch-action: none;
+  }
+
+  .image-modal img:active {
+    cursor: grabbing;
+  }
+
+  .image-modal img:hover {
+    transform: none;
+  }
+</style>
+
+<script>
+  // Modal para imagens com zoom
+  const modal = document.createElement('div');
+  modal.className = 'image-modal';
+  document.body.appendChild(modal);
+
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let currentImg: HTMLImageElement | null = null;
+
+  const updateTransform = () => {
+    if (currentImg) {
+      currentImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }
+  };
+
+  const images = document.querySelectorAll('.prose-custom img');
+  images.forEach(img => {
+    img.addEventListener('click', () => {
+      const imgElement = img as HTMLImageElement;
+      const modalImg = document.createElement('img');
+      modalImg.src = imgElement.src;
+      modalImg.alt = imgElement.alt;
+      modal.innerHTML = '';
+      modal.appendChild(modalImg);
+      modal.classList.add('active');
+      currentImg = modalImg;
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+
+      // Zoom com scroll do mouse
+      modalImg.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        scale = Math.min(Math.max(1, scale + delta), 5);
+        if (scale === 1) {
+          translateX = 0;
+          translateY = 0;
+        }
+        updateTransform();
+      });
+
+      // Arrastar
+      modalImg.addEventListener('mousedown', (e) => {
+        if (scale > 1) {
+          e.preventDefault();
+          isDragging = true;
+          startX = e.clientX - translateX;
+          startY = e.clientY - translateY;
+        }
+      });
+
+      // Touch para mobile (pinch to zoom)
+      let initialDistance = 0;
+      let initialScale = 1;
+
+      modalImg.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          initialDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+          initialScale = scale;
+        }
+      });
+
+      modalImg.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          const currentDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+          scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), 5);
+          if (scale === 1) {
+            translateX = 0;
+            translateY = 0;
+          }
+          updateTransform();
+        }
+      });
+    });
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      updateTransform();
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+    }
+  });
+
+  // Fechar com ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      modal.classList.remove('active');
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+    }
+  });
+</script>

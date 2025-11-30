@@ -1,7 +1,8 @@
 ---
 const { pathname } = Astro.url;
 const isProjetos = pathname.includes('/projetos');
-const titulo = isProjetos ? 'Criando' : 'Bem-vindo';
+const isPesquisas = pathname.includes('/pesquisas');
+const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vindo';
 ---
 
 <div class="loading-bar"></div>
@@ -12,6 +13,7 @@ const titulo = isProjetos ? 'Criando' : 'Bem-vindo';
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/projetos">Projetos</a></li>
+        <li><a href="/pesquisas">Pesquisas</a></li>
       </ul>
     </nav>
   </header>

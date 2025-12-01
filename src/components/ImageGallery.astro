@@ -25,12 +25,17 @@
     z-index: 9999;
     left: 0;
     top: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.95);
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: rgba(0, 0, 0, 0.97);
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    overflow: hidden;
   }
 
   @media (min-width: 768px) {
@@ -272,7 +277,12 @@
       this.modalImg.alt = img.alt;
       this.modal.classList.add('active');
       this.resetZoom();
+
+      // Bloquear scroll do body
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
     }
 
     closeModal() {
@@ -280,7 +290,12 @@
 
       this.modal.classList.remove('active');
       this.resetZoom();
+
+      // Restaurar scroll do body
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
     }
 
     updateTransform() {

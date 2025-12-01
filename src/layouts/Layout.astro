@@ -19,26 +19,13 @@ const { title = TITULO_SITE } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={DESCRICAO_SITE} />
 
-    <!-- Script para evitar flash de tema (FOUC) -->
+    <!-- Script para evitar flash de tema (FOUC) apenas na carga inicial -->
     <script is:inline>
-      (function() {
-        const THEME_KEY = 'theme';
-        const LIGHT_THEME = 'nord';
-        const DARK_THEME = 'business';
-
-        function applyTheme() {
-          // 1. Prioriza tema salvo pelo usuário
-          const saved = localStorage.getItem(THEME_KEY);
-          const theme = saved || LIGHT_THEME;
-          document.documentElement.setAttribute('data-theme', theme);
-        }
-
-        // Aplica tema inicial
-        applyTheme();
-
-        // Mantém tema durante transições de página
-        document.addEventListener('astro:before-swap', applyTheme);
-      })();
+      const THEME_KEY = 'theme';
+      const LIGHT_THEME = 'nord';
+      const saved = localStorage.getItem(THEME_KEY);
+      const theme = saved || LIGHT_THEME;
+      document.documentElement.setAttribute('data-theme', theme);
     </script>
 
     <ViewTransitions />

@@ -44,13 +44,6 @@
   const LIGHT_THEME = 'nord';
   const DARK_THEME = 'business';
 
-  // Função para aplicar tema do localStorage
-  function applyStoredTheme() {
-    const saved = localStorage.getItem(THEME_KEY);
-    const theme = saved || LIGHT_THEME;
-    document.documentElement.setAttribute('data-theme', theme);
-  }
-
   class ThemeManager {
     private toggleButton: HTMLButtonElement | null = null;
     private checkbox: HTMLInputElement | null = null;
@@ -100,9 +93,6 @@
   function setupTheme() {
     new ThemeManager();
   }
-
-  // Mantém tema durante transições de página (antes da troca do DOM)
-  document.addEventListener('astro:before-swap', applyStoredTheme);
 
   // Inicializar no load
   if (document.readyState === 'loading') {

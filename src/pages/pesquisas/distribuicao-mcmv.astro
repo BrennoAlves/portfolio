@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import ImageGallery from "../../components/ImageGallery.astro";
 import { TITULO_SITE } from "../../consts";
 import { getEntry } from 'astro:content';
 
@@ -39,9 +40,11 @@ const { titulo, subtitulo, tags, data } = entry.data;
     </header>
 
     {/* Conteúdo do Markdown */}
-    <div class="prose-custom max-w-none">
-      <Content />
-    </div>
+    <ImageGallery>
+      <div class="prose-custom max-w-none">
+        <Content />
+      </div>
+    </ImageGallery>
 
     {/* Metodologia Expansível */}
     <section class="text-sm mt-12 pt-8 border-t border-base-300">
@@ -149,177 +152,4 @@ const { titulo, subtitulo, tags, data } = entry.data;
     margin-top: 2rem;
   }
 
-  /* Imagens clicáveis */
-  .prose-custom img {
-    cursor: zoom-in;
-    transition: transform 0.2s;
-  }
-
-  .prose-custom img:hover {
-    transform: scale(1.02);
-  }
-
-  /* Modal para imagens */
-  .image-modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
-    cursor: zoom-out;
-  }
-
-  .image-modal.active {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-
-  .image-modal img {
-    max-width: 95%;
-    max-height: 95%;
-    object-fit: contain;
-    cursor: grab;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-    transition: transform 0.2s ease-out;
-    touch-action: none;
-  }
-
-  .image-modal img:active {
-    cursor: grabbing;
-  }
-
-  .image-modal img:hover {
-    transform: none;
-  }
 </style>
-
-<script>
-  // Modal para imagens com zoom
-  const modal = document.createElement('div');
-  modal.className = 'image-modal';
-  document.body.appendChild(modal);
-
-  let scale = 1;
-  let translateX = 0;
-  let translateY = 0;
-  let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-  let currentImg: HTMLImageElement | null = null;
-
-  const updateTransform = () => {
-    if (currentImg) {
-      currentImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-    }
-  };
-
-  const images = document.querySelectorAll('.prose-custom img');
-  images.forEach(img => {
-    img.addEventListener('click', () => {
-      const imgElement = img as HTMLImageElement;
-      const modalImg = document.createElement('img');
-      modalImg.src = imgElement.src;
-      modalImg.alt = imgElement.alt;
-      modal.innerHTML = '';
-      modal.appendChild(modalImg);
-      modal.classList.add('active');
-      currentImg = modalImg;
-      scale = 1;
-      translateX = 0;
-      translateY = 0;
-
-      // Zoom com scroll do mouse
-      modalImg.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        scale = Math.min(Math.max(1, scale + delta), 5);
-        if (scale === 1) {
-          translateX = 0;
-          translateY = 0;
-        }
-        updateTransform();
-      });
-
-      // Arrastar
-      modalImg.addEventListener('mousedown', (e) => {
-        if (scale > 1) {
-          e.preventDefault();
-          isDragging = true;
-          startX = e.clientX - translateX;
-          startY = e.clientY - translateY;
-        }
-      });
-
-      // Touch para mobile (pinch to zoom)
-      let initialDistance = 0;
-      let initialScale = 1;
-
-      modalImg.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          const touch1 = e.touches[0];
-          const touch2 = e.touches[1];
-          initialDistance = Math.hypot(
-            touch2.clientX - touch1.clientX,
-            touch2.clientY - touch1.clientY
-          );
-          initialScale = scale;
-        }
-      });
-
-      modalImg.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          const touch1 = e.touches[0];
-          const touch2 = e.touches[1];
-          const currentDistance = Math.hypot(
-            touch2.clientX - touch1.clientX,
-            touch2.clientY - touch1.clientY
-          );
-          scale = Math.min(Math.max(1, initialScale * (currentDistance / initialDistance)), 5);
-          if (scale === 1) {
-            translateX = 0;
-            translateY = 0;
-          }
-          updateTransform();
-        }
-      });
-    });
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      translateX = e.clientX - startX;
-      translateY = e.clientY - startY;
-      updateTransform();
-    }
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.remove('active');
-      scale = 1;
-      translateX = 0;
-      translateY = 0;
-    }
-  });
-
-  // Fechar com ESC
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      modal.classList.remove('active');
-      scale = 1;
-      translateX = 0;
-      translateY = 0;
-    }
-  });
-</script>

@@ -1,0 +1,338 @@
+---
+// Componente de galeria de imagens com modal, zoom e pan
+// Aplica automaticamente a todas as imagens dentro do slot
+---
+
+<div class="image-gallery-wrapper">
+  <slot />
+</div>
+
+<div id="image-gallery-modal" class="image-modal">
+  <button class="modal-close" aria-label="Fechar galeria">×</button>
+  <div class="modal-controls">
+    <button class="zoom-in" aria-label="Aumentar zoom">+</button>
+    <button class="zoom-out" aria-label="Diminuir zoom">−</button>
+    <button class="zoom-reset" aria-label="Resetar zoom">⟲</button>
+  </div>
+  <img src="" alt="" class="modal-image" />
+</div>
+
+<style is:global>
+  /* Modal */
+  .image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95);
+    cursor: zoom-out;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .image-modal.active {
+    display: flex;
+  }
+
+  .modal-image {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    cursor: grab;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    transition: transform 0.1s ease-out;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .modal-image:active {
+    cursor: grabbing;
+  }
+
+  /* Botão de fechar */
+  .modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+
+  /* Controles de zoom */
+  .modal-controls {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 2rem;
+    padding: 0.5rem;
+    z-index: 10000;
+  }
+
+  .modal-controls button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-controls button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+
+  /* Imagens clicáveis */
+  .image-gallery-wrapper img {
+    cursor: zoom-in;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .image-gallery-wrapper img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 25px 30px -5px rgb(0 0 0 / 0.2), 0 10px 15px -6px rgb(0 0 0 / 0.15);
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .modal-controls {
+      bottom: 1rem;
+    }
+
+    .modal-close {
+      top: 1rem;
+      right: 1rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      font-size: 1.5rem;
+    }
+
+    .modal-image {
+      max-width: 95%;
+      max-height: 95%;
+    }
+  }
+</style>
+
+<script>
+  // Configuração da galeria de imagens
+  class ImageGallery {
+    private modal: HTMLElement | null = null;
+    private modalImg: HTMLImageElement | null = null;
+    private scale: number = 1;
+    private translateX: number = 0;
+    private translateY: number = 0;
+    private isDragging: boolean = false;
+    private startX: number = 0;
+    private startY: number = 0;
+    private initialDistance: number = 0;
+    private initialScale: number = 1;
+
+    constructor() {
+      this.init();
+    }
+
+    init() {
+      this.modal = document.getElementById('image-gallery-modal');
+      this.modalImg = this.modal?.querySelector('.modal-image') as HTMLImageElement;
+
+      if (!this.modal || !this.modalImg) return;
+
+      this.setupImageListeners();
+      this.setupModalListeners();
+      this.setupControlListeners();
+    }
+
+    setupImageListeners() {
+      const images = document.querySelectorAll('.image-gallery-wrapper img');
+      images.forEach(img => {
+        img.addEventListener('click', (e) => this.openModal(e.target as HTMLImageElement));
+      });
+    }
+
+    setupModalListeners() {
+      if (!this.modal || !this.modalImg) return;
+
+      // Fechar ao clicar no fundo
+      this.modal.addEventListener('click', (e) => {
+        if (e.target === this.modal) {
+          this.closeModal();
+        }
+      });
+
+      // Fechar com botão
+      const closeBtn = this.modal.querySelector('.modal-close');
+      closeBtn?.addEventListener('click', () => this.closeModal());
+
+      // Fechar com ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.modal?.classList.contains('active')) {
+          this.closeModal();
+        }
+      });
+
+      // Zoom com scroll
+      this.modalImg.addEventListener('wheel', (e) => this.handleWheel(e));
+
+      // Arrastar
+      this.modalImg.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+      document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+      document.addEventListener('mouseup', () => this.handleMouseUp());
+
+      // Touch (pinch zoom)
+      this.modalImg.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+      this.modalImg.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+    }
+
+    setupControlListeners() {
+      const zoomIn = this.modal?.querySelector('.zoom-in');
+      const zoomOut = this.modal?.querySelector('.zoom-out');
+      const zoomReset = this.modal?.querySelector('.zoom-reset');
+
+      zoomIn?.addEventListener('click', () => this.adjustZoom(0.3));
+      zoomOut?.addEventListener('click', () => this.adjustZoom(-0.3));
+      zoomReset?.addEventListener('click', () => this.resetZoom());
+    }
+
+    openModal(img: HTMLImageElement) {
+      if (!this.modal || !this.modalImg) return;
+
+      this.modalImg.src = img.src;
+      this.modalImg.alt = img.alt;
+      this.modal.classList.add('active');
+      this.resetZoom();
+      document.body.style.overflow = 'hidden';
+    }
+
+    closeModal() {
+      if (!this.modal) return;
+
+      this.modal.classList.remove('active');
+      this.resetZoom();
+      document.body.style.overflow = '';
+    }
+
+    updateTransform() {
+      if (!this.modalImg) return;
+      this.modalImg.style.transform = `translate(${this.translateX}px, ${this.translateY}px) scale(${this.scale})`;
+    }
+
+    adjustZoom(delta: number) {
+      this.scale = Math.min(Math.max(1, this.scale + delta), 5);
+      if (this.scale === 1) {
+        this.translateX = 0;
+        this.translateY = 0;
+      }
+      this.updateTransform();
+    }
+
+    resetZoom() {
+      this.scale = 1;
+      this.translateX = 0;
+      this.translateY = 0;
+      this.updateTransform();
+    }
+
+    handleWheel(e: WheelEvent) {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      this.adjustZoom(delta);
+    }
+
+    handleMouseDown(e: MouseEvent) {
+      if (this.scale > 1) {
+        e.preventDefault();
+        this.isDragging = true;
+        this.startX = e.clientX - this.translateX;
+        this.startY = e.clientY - this.translateY;
+      }
+    }
+
+    handleMouseMove(e: MouseEvent) {
+      if (this.isDragging) {
+        this.translateX = e.clientX - this.startX;
+        this.translateY = e.clientY - this.startY;
+        this.updateTransform();
+      }
+    }
+
+    handleMouseUp() {
+      this.isDragging = false;
+    }
+
+    handleTouchStart(e: TouchEvent) {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        this.initialDistance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        this.initialScale = this.scale;
+      }
+    }
+
+    handleTouchMove(e: TouchEvent) {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const currentDistance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        this.scale = Math.min(
+          Math.max(1, this.initialScale * (currentDistance / this.initialDistance)),
+          5
+        );
+        if (this.scale === 1) {
+          this.translateX = 0;
+          this.translateY = 0;
+        }
+        this.updateTransform();
+      }
+    }
+  }
+
+  // Inicializar quando o DOM estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new ImageGallery());
+  } else {
+    new ImageGallery();
+  }
+</script>

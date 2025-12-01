@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import TagBadges from "../components/TagBadges.astro";
 import { projetosDestaque } from "../consts";
 ---
 
@@ -49,12 +50,12 @@ import { projetosDestaque } from "../consts";
           </div>
         </div>
       </article>
-      
+
       <section class="flex flex-col gap-6">
         <div class="text-center">
           <h2 class="text-2xl">Projetos em Destaque</h2>
         </div>
-        
+
         <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
           {projetosDestaque.map(([nome, projeto]) => (
             <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl card-animate">
@@ -62,23 +63,15 @@ import { projetosDestaque } from "../consts";
                 <div class="flex items-start justify-between mb-3">
                   <h3 class="text-lg font-semibold flex-1">{nome}</h3>
                 </div>
-                
+
                 <p class="text-base-content/70 text-sm leading-relaxed mb-4">
                   {projeto.descricao}
                 </p>
-                
-                <div class="flex flex-wrap gap-2 mb-4">
-                  {projeto.tags.slice(0, 3).map((tag, indice) => (
-                    <div class={`badge border-0 ${
-                      indice % 4 === 0 ? 'bg-primary/20 text-primary' :
-                      indice % 4 === 1 ? 'bg-secondary/20 text-secondary' :
-                      indice % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
-                    }`}>
-                      {tag}
-                    </div>
-                  ))}
+
+                <div class="mb-4">
+                  <TagBadges tags={projeto.tags} maxTags={3} />
                 </div>
-                
+
                 <div class="card-actions justify-end mt-auto">
                   <a href={projeto.url} target="_blank" rel="noopener" class="btn btn-outline btn-sm">
                     Ver Projeto
@@ -88,7 +81,7 @@ import { projetosDestaque } from "../consts";
             </div>
           ))}
         </div>
-        
+
         <div class="text-center mt-4">
           <a href="/projetos" class="btn btn-outline">Outros Projetos</a>
         </div>

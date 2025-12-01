@@ -1,0 +1,24 @@
+---
+import TagBadges from './TagBadges.astro';
+
+export interface Props {
+  title: string;
+  subtitle: string;
+  tags: string[];
+  date: string;
+}
+
+const { title, subtitle, tags, date } = Astro.props;
+---
+
+<header class="mb-8 md:mb-16 border-b border-base-300 pb-6 md:pb-10">
+  <div class="mb-4 md:mb-8">
+    <TagBadges tags={tags} includeDate={date} size="lg" />
+  </div>
+  <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-base-content leading-tight md:leading-[1.1] mb-4 md:mb-8 tracking-tight">
+    {title}
+  </h1>
+  <p class="text-base md:text-xl lg:text-2xl opacity-90 leading-relaxed font-light">
+    {subtitle}
+  </p>
+</header>

@@ -1,0 +1,35 @@
+---
+export interface Props {
+  tags: string[];
+  maxTags?: number;
+  includeDate?: string;
+  size?: 'md' | 'lg';
+}
+
+const { tags, maxTags = tags.length, includeDate, size = 'md' } = Astro.props;
+
+const getBadgeColor = (index: number): string => {
+  const colors = [
+    'bg-primary/20 text-primary',
+    'bg-secondary/20 text-secondary',
+    'bg-accent/20 text-accent',
+    'bg-info/20 text-info'
+  ];
+  return colors[index % 4];
+};
+
+const sizeClass = size === 'lg' ? 'badge-lg' : '';
+---
+
+<div class="flex flex-wrap gap-2">
+  {tags.slice(0, maxTags).map((tag, index) => (
+    <div class={`badge border-0 font-medium ${sizeClass} ${getBadgeColor(index)}`}>
+      {tag}
+    </div>
+  ))}
+  {includeDate && (
+    <div class={`badge border-0 bg-warning/20 text-warning font-medium ${sizeClass}`}>
+      {includeDate}
+    </div>
+  )}
+</div>

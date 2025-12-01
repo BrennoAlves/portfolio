@@ -1,5 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import PageIntro from "../components/PageIntro.astro";
+import TagBadges from "../components/TagBadges.astro";
 import { getCollection } from 'astro:content';
 
 const pesquisas = await getCollection('pesquisas');
@@ -8,12 +10,10 @@ const pesquisas = await getCollection('pesquisas');
 <Layout title="Pesquisas | Brenno Alves">
   <main>
     <div class="flex flex-col gap-12">
-      <div class="flex flex-col gap-6 md:gap-8">
-        <h1 class="text-3xl">Pesquisas</h1>
-        <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70">
-          Análises com dados públicos. Python, estatística e alguns insights sobre políticas públicas.
-        </p>
-      </div>
+      <PageIntro
+        title="Pesquisas"
+        description="Análises com dados públicos. Python, estatística e alguns insights sobre políticas públicas."
+      />
 
       <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
         {pesquisas.map((pesquisa) => (
@@ -27,26 +27,15 @@ const pesquisas = await getCollection('pesquisas');
             </figure>
             <div class="card-body p-6 flex flex-col">
               <h2 class="card-title text-xl font-semibold">
-                MCMV no Sudeste: Dados e Território
+                {pesquisa.data.titulo}
               </h2>
 
               <p class="text-base-content/70 text-sm leading-relaxed mb-4">
                 {pesquisa.data.descricao}
               </p>
 
-              <div class="flex flex-wrap gap-2 mb-6">
-                {pesquisa.data.tags.map((tag, tagIndice) => (
-                  <div class={`badge border-0 font-medium ${
-                    tagIndice % 4 === 0 ? 'bg-primary/20 text-primary' :
-                    tagIndice % 4 === 1 ? 'bg-secondary/20 text-secondary' :
-                    tagIndice % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
-                  }`}>
-                    {tag}
-                  </div>
-                ))}
-                <div class="badge border-0 bg-warning/20 text-warning font-medium">
-                  {pesquisa.data.data}
-                </div>
+              <div class="mb-6">
+                <TagBadges tags={pesquisa.data.tags} includeDate={pesquisa.data.data} />
               </div>
 
               <div class="card-actions justify-end mt-auto">

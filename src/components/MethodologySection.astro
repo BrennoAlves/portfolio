@@ -1,0 +1,31 @@
+---
+export interface Props {
+  items: Array<{
+    title: string;
+    list: string[];
+  }>;
+}
+
+const { items } = Astro.props;
+---
+
+<section class="text-sm mt-12 pt-8 border-t border-base-300">
+  <details class="bg-base-200 rounded-xl p-6 cursor-pointer">
+    <summary class="font-semibold text-base mb-4 cursor-pointer select-none hover:text-primary transition-colors">
+      📊 Metodologia e Fontes de Dados
+    </summary>
+
+    <div class="space-y-5 text-base-content/70 mt-6">
+      {items.map((item) => (
+        <div>
+          <p class="font-semibold mb-2">{item.title}</p>
+          <ul class="list-disc list-inside space-y-2 ml-4">
+            {item.list.map((listItem) => (
+              <li>{listItem}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </details>
+</section>

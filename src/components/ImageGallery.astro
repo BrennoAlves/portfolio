@@ -28,10 +28,16 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.95);
-    cursor: zoom-out;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .image-modal {
+      padding: 2rem;
+      cursor: zoom-out;
+    }
   }
 
   .image-modal.active {
@@ -39,33 +45,40 @@
   }
 
   .modal-image {
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
-    cursor: grab;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
     transition: transform 0.1s ease-out;
-    touch-action: none;
+    touch-action: pan-x pan-y pinch-zoom;
     user-select: none;
   }
 
-  .modal-image:active {
-    cursor: grabbing;
+  @media (min-width: 768px) {
+    .modal-image {
+      cursor: grab;
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .modal-image:active {
+      cursor: grabbing;
+    }
   }
 
   /* Botão de fechar */
   .modal-close {
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 3rem;
-    height: 3rem;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
     transition: all 0.2s;
@@ -73,35 +86,52 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+  @media (min-width: 768px) {
+    .modal-close {
+      top: 1.5rem;
+      right: 1.5rem;
+      width: 3rem;
+      height: 3rem;
+      font-size: 2rem;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
   }
 
   /* Controles de zoom */
   .modal-controls {
     position: absolute;
-    bottom: 2rem;
+    bottom: 1rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 2rem;
     padding: 0.5rem;
     z-index: 10000;
+  }
+
+  @media (min-width: 768px) {
+    .modal-controls {
+      bottom: 2rem;
+    }
   }
 
   .modal-controls button {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
     font-size: 1.25rem;
     cursor: pointer;
@@ -109,41 +139,30 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .modal-controls button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+  @media (min-width: 768px) {
+    .modal-controls button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
   }
 
   /* Imagens clicáveis */
   .image-gallery-wrapper img {
-    cursor: zoom-in;
+    cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
   }
 
-  .image-gallery-wrapper img:hover {
-    transform: scale(1.02);
-    box-shadow: 0 25px 30px -5px rgb(0 0 0 / 0.2), 0 10px 15px -6px rgb(0 0 0 / 0.15);
-  }
-
-  /* Mobile */
-  @media (max-width: 768px) {
-    .modal-controls {
-      bottom: 1rem;
+  @media (min-width: 768px) {
+    .image-gallery-wrapper img {
+      cursor: zoom-in;
     }
 
-    .modal-close {
-      top: 1rem;
-      right: 1rem;
-      width: 2.5rem;
-      height: 2.5rem;
-      font-size: 1.5rem;
-    }
-
-    .modal-image {
-      max-width: 95%;
-      max-height: 95%;
+    .image-gallery-wrapper img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 25px 30px -5px rgb(0 0 0 / 0.2), 0 10px 15px -6px rgb(0 0 0 / 0.15);
     }
   }
 </style>
@@ -161,6 +180,8 @@
     private startY: number = 0;
     private initialDistance: number = 0;
     private initialScale: number = 1;
+    private lastTouchX: number = 0;
+    private lastTouchY: number = 0;
 
     constructor() {
       this.init();
@@ -180,7 +201,10 @@
     setupImageListeners() {
       const images = document.querySelectorAll('.image-gallery-wrapper img');
       images.forEach(img => {
-        img.addEventListener('click', (e) => this.openModal(e.target as HTMLImageElement));
+        img.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.openModal(e.target as HTMLImageElement);
+        });
       });
     }
 
@@ -196,7 +220,10 @@
 
       // Fechar com botão
       const closeBtn = this.modal.querySelector('.modal-close');
-      closeBtn?.addEventListener('click', () => this.closeModal());
+      closeBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.closeModal();
+      });
 
       // Fechar com ESC
       document.addEventListener('keydown', (e) => {
@@ -205,17 +232,18 @@
         }
       });
 
-      // Zoom com scroll
-      this.modalImg.addEventListener('wheel', (e) => this.handleWheel(e));
+      // Zoom com scroll (desktop)
+      this.modalImg.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
 
-      // Arrastar
+      // Arrastar (desktop)
       this.modalImg.addEventListener('mousedown', (e) => this.handleMouseDown(e));
       document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
       document.addEventListener('mouseup', () => this.handleMouseUp());
 
-      // Touch (pinch zoom)
-      this.modalImg.addEventListener('touchstart', (e) => this.handleTouchStart(e));
-      this.modalImg.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+      // Touch (mobile)
+      this.modalImg.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
+      this.modalImg.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+      this.modalImg.addEventListener('touchend', () => this.handleTouchEnd());
     }
 
     setupControlListeners() {
@@ -223,9 +251,18 @@
       const zoomOut = this.modal?.querySelector('.zoom-out');
       const zoomReset = this.modal?.querySelector('.zoom-reset');
 
-      zoomIn?.addEventListener('click', () => this.adjustZoom(0.3));
-      zoomOut?.addEventListener('click', () => this.adjustZoom(-0.3));
-      zoomReset?.addEventListener('click', () => this.resetZoom());
+      zoomIn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.adjustZoom(0.3);
+      });
+      zoomOut?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.adjustZoom(-0.3);
+      });
+      zoomReset?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.resetZoom();
+      });
     }
 
     openModal(img: HTMLImageElement) {
@@ -296,6 +333,7 @@
 
     handleTouchStart(e: TouchEvent) {
       if (e.touches.length === 2) {
+        // Pinch zoom
         e.preventDefault();
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
@@ -304,11 +342,19 @@
           touch2.clientY - touch1.clientY
         );
         this.initialScale = this.scale;
+      } else if (e.touches.length === 1 && this.scale > 1) {
+        // Pan com um dedo quando há zoom
+        e.preventDefault();
+        const touch = e.touches[0];
+        this.lastTouchX = touch.clientX;
+        this.lastTouchY = touch.clientY;
+        this.isDragging = true;
       }
     }
 
     handleTouchMove(e: TouchEvent) {
       if (e.touches.length === 2) {
+        // Pinch zoom
         e.preventDefault();
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
@@ -325,7 +371,22 @@
           this.translateY = 0;
         }
         this.updateTransform();
+      } else if (e.touches.length === 1 && this.isDragging && this.scale > 1) {
+        // Pan com um dedo
+        e.preventDefault();
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - this.lastTouchX;
+        const deltaY = touch.clientY - this.lastTouchY;
+        this.translateX += deltaX;
+        this.translateY += deltaY;
+        this.lastTouchX = touch.clientX;
+        this.lastTouchY = touch.clientY;
+        this.updateTransform();
       }
+    }
+
+    handleTouchEnd() {
+      this.isDragging = false;
     }
   }
 

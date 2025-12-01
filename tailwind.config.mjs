@@ -3,8 +3,11 @@ export default {
 	theme: {
 		extend: {},
 	},
-	plugins: [require("daisyui")],	
+	plugins: [require("daisyui")],
 	daisyui: {
-		themes: ["nord"],
+		themes: [
+			"nord",      // Light mode
+			"business",  // Dark mode (cinza escuro suave)
+		],
 	},
 };

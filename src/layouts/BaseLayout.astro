@@ -1,4 +1,6 @@
 ---
+import ThemeToggle from "../components/ThemeToggle.astro";
+
 const { pathname } = Astro.url;
 const isProjetos = pathname.includes('/projetos');
 const isPesquisas = pathname.includes('/pesquisas');
@@ -9,13 +11,16 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
 <div class="container">
   <header class="header">
     <a href="/" class="logo">{titulo}</a>
-    <nav class="nav">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/projetos">Projetos</a></li>
-        <li><a href="/pesquisas">Pesquisas</a></li>
-      </ul>
-    </nav>
+    <div class="header-actions">
+      <nav class="nav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/projetos">Projetos</a></li>
+          <li><a href="/pesquisas">Pesquisas</a></li>
+        </ul>
+      </nav>
+      <ThemeToggle />
+    </div>
   </header>
   <slot />
 </div>
@@ -67,14 +72,21 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
     gap: 0.75rem;
     padding-bottom: 1.25rem;
   }
-  
+
   @media (min-width: 768px) {
     .header {
       flex-direction: row;
       justify-content: space-between;
+      align-items: center;
       gap: 0.5rem;
       padding-bottom: 0;
     }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
   
   .logo {

@@ -1,0 +1,42 @@
+---
+interface Props {
+  nome: string;
+  descricao: string;
+  tags: string[];
+  url: string;
+  maxTags?: number;
+}
+
+const { nome, descricao, tags, url, maxTags } = Astro.props;
+const displayTags = maxTags ? tags.slice(0, maxTags) : tags;
+---
+
+<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-2xl card-animate">
+  <div class="card-body p-6 flex flex-col">
+    <div class="flex items-start justify-between mb-3">
+      <h2 class="card-title text-xl font-semibold flex-1">{nome}</h2>
+    </div>
+
+    <p class="text-base-content/70 text-sm leading-relaxed mb-4">
+      {descricao}
+    </p>
+
+    <div class="flex flex-wrap gap-2 mb-6">
+      {displayTags.map((tag, indice) => (
+        <div class={`badge border-0 ${
+          indice % 4 === 0 ? 'bg-primary/20 text-primary' :
+          indice % 4 === 1 ? 'bg-secondary/20 text-secondary' :
+          indice % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
+        }`}>
+          {tag}
+        </div>
+      ))}
+    </div>
+
+    <div class="card-actions justify-end mt-auto">
+      <a href={url} target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+        Ver Projeto
+      </a>
+    </div>
+  </div>
+</div>

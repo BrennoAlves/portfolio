@@ -1,1 +1,4 @@
-vai tomar no cu robô
+User-agent: *
+Allow: /
+
+Sitemap: https://brennoalves.com.br/sitemap-index.xml

@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import { TITULO_SITE, DESCRICAO_SITE } from "../consts";
 import BaseLayout from "./BaseLayout.astro";
 
@@ -11,7 +11,7 @@ const { title = TITULO_SITE } = Astro.props;
 ---
 
 <!doctype html>
-<html class="bg-base-100 text-base-content overflow-y-scroll" lang="pt-br" data-theme="nord">
+<html class="bg-base-100 text-base-content overflow-y-scroll" lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -19,52 +19,27 @@ const { title = TITULO_SITE } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={DESCRICAO_SITE} />
 
-    <!-- Script para evitar flash de tema (FOUC) e manter durante transições -->
-    <script is:inline>
-      (function() {
-        const THEME_KEY = 'theme';
-        const LIGHT_THEME = 'nord';
-
-        function getTheme() {
-          return localStorage.getItem(THEME_KEY) || LIGHT_THEME;
-        }
-
-        function setTheme(doc) {
-          const theme = getTheme();
-          doc.documentElement.setAttribute('data-theme', theme);
-        }
-
-        // Aplica tema inicial
-        setTheme(document);
-
-        // Mantém tema durante transições de página
-        document.addEventListener('astro:before-swap', (ev) => {
-          setTheme(ev.newDocument);
-        });
-      })();
-    </script>
-
-    <ViewTransitions />
+    <ClientRouter />
     <style>
       ::view-transition-old(root),
       ::view-transition-new(root) {
         animation-duration: 0.3s;
         animation-timing-function: ease-in-out;
       }
-      
+
       ::view-transition-old(root) {
         animation-name: slideOut;
       }
-      
+
       ::view-transition-new(root) {
         animation-name: slideIn;
       }
-      
+
       @keyframes slideOut {
         from { opacity: 1; transform: translateX(0); }
         to { opacity: 0; transform: translateX(-20px); }
       }
-      
+
       @keyframes slideIn {
         from { opacity: 0; transform: translateX(20px); }
         to { opacity: 1; transform: translateX(0); }

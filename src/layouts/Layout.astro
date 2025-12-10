@@ -11,13 +11,18 @@ const { title = TITULO_SITE } = Astro.props;
 ---
 
 <!doctype html>
-<html class="bg-base-100 text-base-content overflow-y-scroll" lang="pt-br">
+<html class="bg-base-100 text-base-content overflow-y-scroll" lang="pt-br" data-theme="nord">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={DESCRICAO_SITE} />
+
+    <!-- Limpar tema salvo do localStorage -->
+    <script is:inline>
+      localStorage.removeItem('theme');
+    </script>
 
     <ClientRouter />
     <style>

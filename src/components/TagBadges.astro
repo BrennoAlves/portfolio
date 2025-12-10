@@ -10,10 +10,10 @@ const { tags, maxTags = tags.length, includeDate, size = 'md' } = Astro.props;
 
 const getBadgeColor = (index: number): string => {
   const colors = [
-    'badge-primary',
-    'badge-secondary',
-    'badge-accent',
-    'badge-info'
+    'bg-primary/20 text-primary border-primary/30',
+    'bg-secondary/20 text-secondary border-secondary/30',
+    'bg-accent/20 text-accent border-accent/30',
+    'bg-info/20 text-info border-info/30'
   ];
   return colors[index % 4];
 };
@@ -28,7 +28,7 @@ const sizeClass = size === 'lg' ? 'badge-lg' : '';
     </div>
   ))}
   {includeDate && (
-    <div class={`badge badge-warning font-medium ${sizeClass}`}>
+    <div class={`badge bg-warning/20 text-warning border-warning/30 font-medium ${sizeClass}`}>
       {includeDate}
     </div>
   )}

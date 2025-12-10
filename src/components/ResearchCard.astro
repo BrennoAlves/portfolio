@@ -36,9 +36,9 @@ const displayTags = maxTags ? tags.slice(0, maxTags) : tags;
     <div class="flex flex-wrap gap-2 mb-6">
       {displayTags.map((tag, indice) => (
         <div class={`badge ${
-          indice % 4 === 0 ? 'badge-primary' :
-          indice % 4 === 1 ? 'badge-secondary' :
-          indice % 4 === 2 ? 'badge-accent' : 'badge-info'
+          indice % 4 === 0 ? 'bg-primary/20 text-primary border-primary/30' :
+          indice % 4 === 1 ? 'bg-secondary/20 text-secondary border-secondary/30' :
+          indice % 4 === 2 ? 'bg-accent/20 text-accent border-accent/30' : 'bg-info/20 text-info border-info/30'
         }`}>
           {tag}
         </div>

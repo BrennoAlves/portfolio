@@ -9,6 +9,50 @@ interface Props {
 
 const { nome, descricao, tags, url, maxTags } = Astro.props;
 const displayTags = maxTags ? tags.slice(0, maxTags) : tags;
+
+// Função para gerar cores consistentes baseadas no nome da tag
+const getTagColor = (tag: string): string => {
+  // Mapeamento fixo para tags comuns
+  const tagColorMap: Record<string, string> = {
+    'python': 'bg-blue-100 text-blue-700 border-blue-200',
+    'data science': 'bg-purple-100 text-purple-700 border-purple-200',
+    'política pública': 'bg-pink-100 text-pink-700 border-pink-200',
+    'educação': 'bg-teal-100 text-teal-700 border-teal-200',
+    'cli': 'bg-indigo-100 text-indigo-700 border-indigo-200',
+    'automação': 'bg-cyan-100 text-cyan-700 border-cyan-200',
+    'machine learning': 'bg-rose-100 text-rose-700 border-rose-200',
+    'nlp': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'aws textract': 'bg-violet-100 text-violet-700 border-violet-200',
+    'ocr': 'bg-sky-100 text-sky-700 border-sky-200',
+    'web scraping': 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200',
+    'selenium': 'bg-lime-100 text-lime-700 border-lime-200',
+    'pandas': 'bg-amber-100 text-amber-700 border-amber-200',
+    'jupyter notebook': 'bg-orange-100 text-orange-700 border-orange-200'
+  };
+
+  const normalized = tag.toLowerCase().trim();
+
+  // Se a tag está no mapeamento, usa a cor fixa
+  if (tagColorMap[normalized]) {
+    return tagColorMap[normalized];
+  }
+
+  // Para tags não mapeadas, usa hash
+  const colors = [
+    'bg-slate-100 text-slate-700 border-slate-200',
+    'bg-zinc-100 text-zinc-700 border-zinc-200',
+    'bg-stone-100 text-stone-700 border-stone-200'
+  ];
+
+  let hash = 0;
+  for (let i = 0; i < normalized.length; i++) {
+    const char = normalized.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+
+  return colors[Math.abs(hash) % colors.length];
+};
 ---
 
 <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-2xl card-animate">
@@ -22,12 +66,8 @@ const displayTags = maxTags ? tags.slice(0, maxTags) : tags;
     </p>
 
     <div class="flex flex-wrap gap-2 mb-6">
-      {displayTags.map((tag, indice) => (
-        <div class={`badge border-0 ${
-          indice % 4 === 0 ? 'bg-primary/20 text-primary' :
-          indice % 4 === 1 ? 'bg-secondary/20 text-secondary' :
-          indice % 4 === 2 ? 'bg-accent/20 text-accent' : 'bg-info/20 text-info'
-        }`}>
+      {displayTags.map((tag) => (
+        <div class={`badge ${getTagColor(tag)}`}>
           {tag}
         </div>
       ))}

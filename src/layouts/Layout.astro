@@ -5,9 +5,13 @@ import BaseLayout from "./BaseLayout.astro";
 
 export interface Props {
   title?: string;
+  description?: string;
+  jsonLd?: Record<string, unknown>;
 }
 
-const { title = TITULO_SITE } = Astro.props;
+const { title = TITULO_SITE, description = DESCRICAO_SITE, jsonLd } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/perfil.webp', Astro.site);
 ---
 
 <!doctype html>
@@ -17,12 +21,21 @@ const { title = TITULO_SITE } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <meta name="description" content={DESCRICAO_SITE} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
 
-    <!-- Limpar tema salvo do localStorage -->
-    <script is:inline>
-      localStorage.removeItem('theme');
-    </script>
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="google-site-verification" content="hfqVMCXvsJiTa-7CUM-DGmepBjA8KpT5UFaWzWFgTIo" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <ClientRouter />
     <style>

@@ -6,9 +6,45 @@ import { projetosDestaque } from "../consts";
 import { getCollection } from "astro:content";
 
 const pesquisas = await getCollection("pesquisas");
+
+const homeDescription = "Sócio na DataClix. De estagiário de dados a analista a sócio — projetos e pesquisas em dados, automação e gestão de desenvolvimento.";
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Brenno Alves",
+  "jobTitle": "CEO",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "DataClix",
+    "url": "https://www.dataclix.com.br/"
+  },
+  "url": "https://brennoalves.com.br",
+  "sameAs": [
+    "https://www.linkedin.com/in/brennonogueiraalves/",
+    "https://github.com/BrennoAlves"
+  ],
+  "email": "brenno1231@outlook.com",
+  "description": homeDescription
+};
+
+const skills = [
+  {
+    area: "Dados & Análise",
+    items: ["Python", "Pandas", "GeoPandas", "Matplotlib", "Seaborn", "Jupyter", "Estatística"]
+  },
+  {
+    area: "ML & Automação",
+    items: ["NLP", "SentenceTransformer", "AWS Textract", "Selenium", "BeautifulSoup", "CLI"]
+  },
+  {
+    area: "Gestão & Negócios",
+    items: ["Gestão de Projetos", "Entrega de Soluções", "Dados Públicos", "Políticas Públicas"]
+  }
+];
 ---
 
-<Layout>
+<Layout description={homeDescription} jsonLd={personSchema}>
   <main>
     <div class="flex flex-col gap-12">
       <article class="md:flex-row-reverse md:justify-end md:gap-12">
@@ -16,7 +52,7 @@ const pesquisas = await getCollection("pesquisas");
           <div class="col-span-2 flex flex-col gap-4 md:gap-6 my-auto">
             <h1 class="text-3xl">Prazer, Brenno.</h1>
             <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70">
-              Na <a class="font-normal text-primary" href="https://www.dataclix.com.br/">DataClix</a>, meu trabalho é resolver os problemas dos clientes com tecnologias personalizadas e análise de dados. Nas horas vagas, uso a tecnologia para resolver os meus. Este site é meu portfólio de estudos e pequenas soluções, onde testo novas ferramentas e crio coisas que facilitam o dia a dia. Fora do código, tento a sorte com pães e música.
+              Trabalho com dados e tecnologia. Fiz meu primeiro curso de programação aos 10 anos. Fui pra Economia por causa da estatística, comecei como estagiário de dados, virei analista e hoje sou sócio na <a class="font-normal text-primary" href="https://www.dataclix.com.br/">DataClix</a>, onde trabalho com dados e gestão de projetos de desenvolvimento. Este site tem alguns desses projetos de estudos. Nas horas vagas, faço pão, tento tocar baixo e cuido da minha gata gorda.
             </p>
             <div class="nav">
               <ul>
@@ -54,6 +90,21 @@ const pesquisas = await getCollection("pesquisas");
           </div>
         </div>
       </article>
+
+      <section class="flex flex-col gap-4">
+        <div class="flex flex-col gap-3">
+          {skills.map((grupo) => (
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span class="text-xs opacity-50 uppercase tracking-widest w-full sm:w-auto sm:min-w-[10rem]">{grupo.area}</span>
+              <div class="flex flex-wrap gap-2">
+                {grupo.items.map((item) => (
+                  <span class="badge badge-ghost badge-sm">{item}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section class="flex flex-col gap-6">
         <div class="text-center">

@@ -1,7 +1,14 @@
 ---
 import Layout from "./Layout.astro";
+
+export interface Props {
+  description?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { description, jsonLd } = Astro.props;
 ---
 
-<Layout title="Projetos | Brenno Alves">
+<Layout title="Projetos | Brenno Alves" description={description} jsonLd={jsonLd}>
   <slot />
 </Layout>

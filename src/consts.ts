@@ -24,8 +24,7 @@ export const projetos: Record<string, Projeto> = {
   "WebScraping Rua CEP": {
     url: "https://github.com/BrennoAlves/webscraping-Rua-cep",
     descricao: "Ferramenta de webscraping para extrair dados de nomes de bairros do site ruacep.com.br, útil para normalização de dados geográficos.",
-    tags: ["Python", "Web Scraping", "BeautifulSoup", "Requests"],
-    destaque: true
+    tags: ["Python", "Web Scraping", "BeautifulSoup", "Requests"]
   },
   "Preenchedor Forms": {
     url: "https://github.com/BrennoAlves/preenchedor",

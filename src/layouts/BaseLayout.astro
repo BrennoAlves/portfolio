@@ -324,7 +324,7 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
       cols = Math.max(12, Math.round(window.innerWidth / 56));
       colW = w / cols;
       // a máquina já estava rodando antes de você abrir: sino parcial pré-semeado
-      const teto = h * 0.24;
+      const teto = h * 0.16;
       const sigma = cols / 7;
       counts = Array.from({ length: cols }, (_, c) => {
         const z = (c - (cols - 1) / 2) / sigma;
@@ -339,6 +339,15 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
 
     resize();
     window.addEventListener('resize', resize, { passive: true });
+
+    // dono do hero, fantasma no resto: desvanece conforme o scroll
+    function fadePorScroll() {
+      const p = Math.min(1, window.scrollY / (window.innerHeight * 0.8));
+      cv.style.opacity = String(1 - p * 0.88); // nunca abaixo de 0.12
+    }
+    fadePorScroll();
+    window.addEventListener('scroll', fadePorScroll, { passive: true });
+    document.addEventListener('astro:page-load', fadePorScroll);
 
     if (!mobile) {
       window.addEventListener('pointermove', (e) => {
@@ -429,15 +438,17 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
       }
 
       // histograma vivo: sobe com as aterrissagens, respira com decay lento
-      const alturaTeto = h * 0.24;
+      const alturaTeto = h * 0.16;
       for (let c = 0; c < cols; c++) {
         counts[c] = Math.min(alturaTeto, counts[c]) * 0.9996;
         const alt = counts[c];
         if (alt < 1) continue;
-        g.fillStyle = `rgba(${rgb}, ${dark ? 0.16 : 0.12})`;
+        // barra desvanece rumo ao topo — sem borda dura, sem "coluna de sombra"
+        const grad = g.createLinearGradient(0, chao - alt, 0, chao);
+        grad.addColorStop(0, `rgba(${rgb}, 0)`);
+        grad.addColorStop(1, `rgba(${rgb}, ${dark ? 0.14 : 0.09})`);
+        g.fillStyle = grad;
         g.fillRect(c * colW + 1 * dpr, chao - alt, colW - 2 * dpr, alt);
-        g.fillStyle = `rgba(${rgb}, ${dark ? 0.5 : 0.4})`;
-        g.fillRect(c * colW + 1 * dpr, chao - alt, colW - 2 * dpr, 1.2 * dpr);
       }
 
       requestAnimationFrame(tick);

@@ -12,6 +12,8 @@ export interface Props {
 const { title, subtitle, tags, date, transitionName } = Astro.props;
 ---
 
+<div class="reading-progress" aria-hidden="true"></div>
+
 <header class="mb-8 md:mb-16 border-b border-base-300 pb-6 md:pb-10">
   <div class="mb-4 md:mb-8">
     <TagBadges tags={tags} includeDate={date} size="lg" />
@@ -23,3 +25,39 @@ const { title, subtitle, tags, date, transitionName } = Astro.props;
     {subtitle}
   </p>
 </header>
+
+{/* is:inline: o minificador (lightningcss) descarta animation-timeline; inline pula o pipeline */}
+<style is:inline>
+  .reading-progress {
+    display: none;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .reading-progress {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--color-primary);
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: readingProgress linear forwards;
+      animation-timeline: scroll(root);
+      z-index: 50;
+    }
+
+    @keyframes readingProgress {
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reading-progress {
+      display: none;
+    }
+  }
+</style>

@@ -232,3 +232,26 @@ const skills = [
     }
   }
 </style>
+
+{/* is:inline: o minificador (lightningcss) descarta animation-timeline; inline pula o pipeline */}
+<style is:inline>
+  @supports (animation-timeline: scroll()) {
+    .hero-photo img {
+      animation: heroParallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0px 500px;
+    }
+
+    @keyframes heroParallax {
+      to {
+        transform: translateY(36px);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-photo img {
+      animation: none;
+    }
+  }
+</style>

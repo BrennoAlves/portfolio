@@ -1,0 +1,308 @@
+---
+// footer assinatura, a máquina de Galton com a seção dela
+const ano = new Date().getFullYear();
+---
+
+<footer class="qf" aria-label="Rodapé">
+  <div class="qf-inner qf-head">
+    <div>
+      <p class="qf-title">Cada ponto é aleatório. O conjunto não.</p>
+      <p class="qf-sub">
+        Cada um cai por um caminho sorteado e ainda assim eles formam uma curva
+        normal. É o teorema central do limite em ação. Clique na chuva para soltar
+        mais pontos. Mexa o mouse para entortar a amostra.
+      </p>
+    </div>
+    <ul class="qf-links">
+      <li><a href="https://www.linkedin.com/in/brennonogueiraalves/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+      <li><a href="https://github.com/BrennoAlves" target="_blank" rel="noreferrer">GitHub</a></li>
+      <li><a href="mailto:brenno1231@outlook.com">Email</a></li>
+    </ul>
+  </div>
+
+  <canvas class="qf-canvas"></canvas>
+
+  <div class="qf-inner qf-foot">
+    <span>© {ano} Brenno Alves</span>
+    <span class="qf-n">n = 0</span>
+  </div>
+</footer>
+
+<style>
+  .qf {
+    margin-top: 5rem;
+    border-top: 1px solid var(--color-base-300);
+  }
+
+  .qf-inner {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .qf-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding-top: 2.5rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .qf-title {
+    font-weight: 600;
+  }
+
+  .qf-sub {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    opacity: 0.6;
+    max-width: 36rem;
+    margin-top: 0.375rem;
+  }
+
+  .qf-links {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .qf-links a:hover {
+    text-decoration: underline;
+  }
+
+  .qf-canvas {
+    display: block;
+    width: 100%;
+    height: 260px;
+    cursor: crosshair;
+  }
+
+  @media (max-width: 640px) {
+    .qf-canvas {
+      height: 200px;
+    }
+  }
+
+  .qf-foot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    opacity: 0.5;
+    padding-top: 0.75rem;
+    padding-bottom: 1.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script>
+  import { play } from 'cuelume';
+
+  function initQuincunxFooter() {
+    const canvas = document.querySelector('.qf-canvas');
+    if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.on) return;
+    canvas.dataset.on = '1';
+    const cv = canvas; // narrowing não sobrevive a closures
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    const g = ctx;
+    const nEl = document.querySelector('.qf-n');
+    const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobile = window.matchMedia('(pointer: coarse)').matches;
+
+    const balls: { x: number; y: number; vx: number; vy: number }[] = [];
+    const mouse = { x: -99999, y: -99999 };
+    let w = 0, h = 0, dpr = 1, cols = 0, colW = 0;
+    let counts: number[] = [];
+    let pegRows: number[] = [];
+    let pegGapX = 0;
+    let total = 0;
+
+    function temaRgb() {
+      return document.documentElement.getAttribute('data-theme') === 'business'
+        ? '129, 161, 193'
+        : '94, 129, 172';
+    }
+
+    function resize() {
+      const bw = cv.offsetWidth, bh = cv.offsetHeight;
+      if (!bw || !bh) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = cv.width = bw * dpr;
+      h = cv.height = bh * dpr;
+      cols = Math.max(16, Math.round(bw / 34));
+      colW = w / cols;
+      // a máquina já estava rodando: sino parcial pré-semeado
+      const teto = h * 0.55;
+      const sigma = cols / 7;
+      counts = Array.from({ length: cols }, (_, c) => {
+        const z = (c - (cols - 1) / 2) / sigma;
+        return teto * 0.5 * Math.exp(-0.5 * z * z) * (0.8 + Math.random() * 0.4);
+      });
+      pegRows = [];
+      for (let r = 0; r < 5; r++) pegRows.push(h * (0.10 + r * 0.10));
+      pegGapX = w / 22;
+      if (reduz) desenhaEstatico();
+    }
+
+    function barras(rgb: string) {
+      const chao = h - 3 * dpr;
+      for (let c = 0; c < cols; c++) {
+        const alt = counts[c];
+        if (alt < 1) continue;
+        g.fillStyle = `rgba(${rgb}, 0.22)`;
+        g.fillRect(c * colW + 1 * dpr, chao - alt, colW - 2 * dpr, alt);
+        g.fillStyle = `rgba(${rgb}, 0.55)`;
+        g.fillRect(c * colW + 1 * dpr, chao - alt, colW - 2 * dpr, 1.4 * dpr);
+      }
+    }
+
+    function desenhaEstatico() {
+      g.clearRect(0, 0, w, h);
+      barras(temaRgb());
+    }
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    if (reduz) return; // sino estático, sem chuva
+
+    cv.addEventListener('pointermove', (e) => {
+      const r = cv.getBoundingClientRect();
+      mouse.x = (e.clientX - r.left) * dpr;
+      mouse.y = (e.clientY - r.top) * dpr;
+    }, { passive: true });
+    cv.addEventListener('pointerleave', () => {
+      mouse.x = -99999;
+      mouse.y = -99999;
+    }, { passive: true });
+
+    // clique despeja uma rajada na coluna mirada
+    cv.addEventListener('click', (e) => {
+      const r = cv.getBoundingClientRect();
+      const x = (e.clientX - r.left) * dpr;
+      for (let i = 0; i < 14; i++) {
+        balls.push({
+          x: x + (Math.random() - 0.5) * w * 0.03,
+          y: -Math.random() * h * 0.15,
+          vx: 0,
+          vy: (0.5 + Math.random() * 0.7) * dpr,
+        });
+      }
+      play('droplet');
+    });
+
+    const SPAWN = mobile ? 700 : 380;
+    const MAX = mobile ? 40 : 80;
+    let running = false;
+    let raf = 0;
+    let lastSpawn = 0;
+
+    function tick(agora: number) {
+      if (!running) return;
+      if (!w || !h) {
+        resize();
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      g.clearRect(0, 0, w, h);
+      const rgb = temaRgb();
+
+      // pinos agora visíveis, a máquina é a protagonista da seção
+      g.fillStyle = `rgba(${rgb}, 0.20)`;
+      for (let ri = 0; ri < pegRows.length; ri++) {
+        const py = pegRows[ri];
+        for (let px = (ri % 2) * pegGapX * 0.5; px <= w; px += pegGapX) {
+          g.beginPath();
+          g.arc(px, py, 1.1 * dpr, 0, 6.2832);
+          g.fill();
+        }
+      }
+
+      if (agora - lastSpawn > SPAWN && balls.length < MAX) {
+        lastSpawn = agora;
+        balls.push({
+          x: w / 2 + (Math.random() - 0.5) * w * 0.05,
+          y: -3 * dpr,
+          vx: 0,
+          vy: (0.5 + Math.random() * 0.4) * dpr,
+        });
+      }
+
+      const chao = h - 3 * dpr;
+      const grav = 0.06 * dpr;
+      const vmax = 2.4 * dpr;
+
+      for (let i = balls.length - 1; i >= 0; i--) {
+        const b = balls[i];
+        const yAntes = b.y;
+        b.vy = Math.min(vmax, b.vy + grav);
+        const dx = b.x - mouse.x;
+        const dy = b.y - mouse.y;
+        const dm = Math.hypot(dx, dy);
+        if (dm < 70 * dpr && dm > 0.01) b.vx += (dx / dm) * 0.3 * dpr;
+        for (const py of pegRows) {
+          if (yAntes < py && b.y >= py) {
+            b.vx += (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 0.3) * dpr;
+          }
+        }
+        b.vx *= 0.95;
+        b.x += b.vx;
+        b.y += b.vy;
+        if (b.x < 2 * dpr) { b.x = 2 * dpr; b.vx = Math.abs(b.vx); }
+        if (b.x > w - 2 * dpr) { b.x = w - 2 * dpr; b.vx = -Math.abs(b.vx); }
+
+        const bin = Math.max(0, Math.min(cols - 1, Math.floor(b.x / colW)));
+        if (b.y >= chao - (counts[bin] || 0)) {
+          counts[bin] = Math.min(h * 0.55, counts[bin] + 5 * dpr);
+          balls.splice(i, 1);
+          total++;
+          if (nEl) nEl.textContent = `n = ${total.toLocaleString('pt-BR')}`;
+          continue;
+        }
+        g.fillStyle = `rgba(${rgb}, 0.8)`;
+        g.beginPath();
+        g.arc(b.x, b.y, 1.8 * dpr, 0, 6.2832);
+        g.fill();
+      }
+
+      for (let c = 0; c < cols; c++) counts[c] *= 0.9995;
+      barras(rgb);
+      raf = requestAnimationFrame(tick);
+    }
+
+    // só roda quando o footer está na tela
+    const io = new IntersectionObserver((entradas) => {
+      for (const en of entradas) {
+        if (en.isIntersecting && !running) {
+          running = true;
+          lastSpawn = performance.now();
+          raf = requestAnimationFrame(tick);
+        } else if (!en.isIntersecting && running) {
+          running = false;
+          cancelAnimationFrame(raf);
+        }
+      }
+    }, { threshold: 0.1 });
+    io.observe(cv);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && running) {
+        running = false;
+        cancelAnimationFrame(raf);
+      } else if (!document.hidden && !running) {
+        const r = cv.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < window.innerHeight) {
+          running = true;
+          lastSpawn = performance.now();
+          raf = requestAnimationFrame(tick);
+        }
+      }
+    });
+  }
+
+  initQuincunxFooter();
+  document.addEventListener('astro:page-load', initQuincunxFooter);
+</script>

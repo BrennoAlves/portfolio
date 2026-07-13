@@ -6,19 +6,58 @@ export interface Props {
   subtitle: string;
   tags: string[];
   date: string;
+  transitionName?: string;
 }
 
-const { title, subtitle, tags, date } = Astro.props;
+const { title, subtitle, tags, date, transitionName } = Astro.props;
 ---
+
+<div class="reading-progress" aria-hidden="true"></div>
 
 <header class="mb-8 md:mb-16 border-b border-base-300 pb-6 md:pb-10">
   <div class="mb-4 md:mb-8">
     <TagBadges tags={tags} includeDate={date} size="lg" />
   </div>
-  <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-base-content leading-tight md:leading-[1.1] mb-4 md:mb-8 tracking-tight">
+  <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-base-content leading-tight md:leading-[1.1] mb-4 md:mb-8 tracking-tight" transition:name={transitionName}>
     {title}
   </h1>
   <p class="text-base md:text-xl lg:text-2xl opacity-90 leading-relaxed font-light">
     {subtitle}
   </p>
 </header>
+
+{/* is:inline: o minificador (lightningcss) descarta animation-timeline; inline pula o pipeline */}
+<style is:inline>
+  .reading-progress {
+    display: none;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .reading-progress {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--color-primary);
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: readingProgress linear forwards;
+      animation-timeline: scroll(root);
+      z-index: 50;
+    }
+
+    @keyframes readingProgress {
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reading-progress {
+      display: none;
+    }
+  }
+</style>

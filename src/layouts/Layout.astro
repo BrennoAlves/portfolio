@@ -1,7 +1,10 @@
 ---
 import { ClientRouter } from "astro:transitions";
+import { getImage } from "astro:assets";
 import { TITULO_SITE, DESCRICAO_SITE } from "../consts";
-import BaseLayout from "./BaseLayout.astro";
+import SiteChrome from "./SiteChrome.astro";
+import perfilFoto from "../assets/perfil.webp";
+import "../styles/global.css";
 
 export interface Props {
   title?: string;
@@ -11,14 +14,16 @@ export interface Props {
 
 const { title = TITULO_SITE, description = DESCRICAO_SITE, jsonLd } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL('/perfil.webp', Astro.site);
+const ogImageOtimizada = await getImage({ src: perfilFoto, width: perfilFoto.width, height: perfilFoto.height });
+const ogImage = new URL(ogImageOtimizada.src, Astro.site);
 ---
 
 <!doctype html>
 <html class="bg-base-100 text-base-content overflow-y-scroll" lang="pt-br" data-theme="nord">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#2e3440" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -26,6 +31,7 @@ const ogImage = new URL('/perfil.webp', Astro.site);
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content={TITULO_SITE} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
@@ -38,35 +44,41 @@ const ogImage = new URL('/perfil.webp', Astro.site);
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <ClientRouter />
-    <style>
-      ::view-transition-old(root),
-      ::view-transition-new(root) {
-        animation-duration: 0.3s;
-        animation-timing-function: ease-in-out;
-      }
-
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      (function () {
+        function aplicaTema() {
+          try {
+            var t = localStorage.getItem('tema');
+            if (t) document.documentElement.setAttribute('data-theme', t);
+          } catch (e) {}
+        }
+        aplicaTema();
+        document.addEventListener('astro:after-swap', aplicaTema);
+      })();
+    </script>
+    <style is:global>
+      /* saída mais rápida que entrada = timing assimétrico */
       ::view-transition-old(root) {
-        animation-name: slideOut;
+        animation: vtOut 150ms cubic-bezier(0.23, 1, 0.32, 1) both;
       }
 
       ::view-transition-new(root) {
-        animation-name: slideIn;
+        animation: vtIn 250ms cubic-bezier(0.23, 1, 0.32, 1) both;
       }
 
-      @keyframes slideOut {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(-20px); }
+      @keyframes vtOut {
+        to { opacity: 0; }
       }
 
-      @keyframes slideIn {
-        from { opacity: 0; transform: translateX(20px); }
-        to { opacity: 1; transform: translateX(0); }
+      @keyframes vtIn {
+        from { opacity: 0; transform: translateY(8px); }
       }
     </style>
   </head>
   <body>
-    <BaseLayout>
+    <SiteChrome>
       <slot />
-    </BaseLayout>
+    </SiteChrome>
   </body>
 </html>

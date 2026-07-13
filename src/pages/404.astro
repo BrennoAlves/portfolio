@@ -25,7 +25,7 @@ import Layout from "../layouts/Layout.astro";
         </div>
 
         <div class="nav-buttons">
-          <a href="/" class="btn btn-outline">← Voltar pra Home</a>
+          <a href="/" class="btn btn-outline">← Voltar para Home</a>
           <a href="/projetos" class="btn btn-outline">Ver Projetos</a>
         </div>
       </div>
@@ -168,7 +168,9 @@ import Layout from "../layouts/Layout.astro";
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
+                box-shadow 200ms ease,
+                background-color 200ms ease;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   }
 
@@ -179,8 +181,16 @@ import Layout from "../layouts/Layout.astro";
   }
 
   .btn-game:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.97);
     box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glitch,
+    .glitch::before,
+    .glitch::after {
+      animation: none;
+    }
   }
 
   .nav-buttons {
@@ -363,7 +373,7 @@ import Layout from "../layouts/Layout.astro";
     if (score === highScore && score > 0) {
       ctx.font = '20px sans-serif';
       ctx.fillStyle = '#5eead4';
-      ctx.fillText('🏆 Novo Recorde!', canvas.width / 2, canvas.height / 2 + 60);
+      ctx.fillText('Novo Recorde!', canvas.width / 2, canvas.height / 2 + 60);
     }
   }
 

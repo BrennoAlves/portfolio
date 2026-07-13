@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PageIntro from "../components/PageIntro.astro";
-import TagBadges from "../components/TagBadges.astro";
+import ResearchCard from "../components/ResearchCard.astro";
 import { getCollection } from 'astro:content';
 
 const pesquisas = await getCollection('pesquisas');
@@ -17,36 +17,15 @@ const pesquisas = await getCollection('pesquisas');
 
       <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
         {pesquisas.map((pesquisa) => (
-          <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-2xl card-animate">
-            <figure class="h-48 overflow-hidden">
-              <img
-                src={pesquisa.data.imagemCapa}
-                alt={pesquisa.data.titulo}
-                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                loading="lazy"
-                decoding="async"
-              />
-            </figure>
-            <div class="card-body p-6 flex flex-col">
-              <h2 class="card-title text-xl font-semibold">
-                {pesquisa.data.titulo}
-              </h2>
-
-              <p class="text-base-content/70 text-sm leading-relaxed mb-4">
-                {pesquisa.data.descricao}
-              </p>
-
-              <div class="mb-6">
-                <TagBadges tags={pesquisa.data.tags} includeDate={pesquisa.data.data} />
-              </div>
-
-              <div class="card-actions justify-end mt-auto">
-                <a href={`/pesquisas/${pesquisa.slug}`} class="btn btn-outline btn-sm">
-                  Ler Análise
-                </a>
-              </div>
-            </div>
-          </div>
+          <ResearchCard
+            titulo={pesquisa.data.titulo}
+            descricao={pesquisa.data.descricao}
+            tags={pesquisa.data.tags}
+            url={`/pesquisas/${pesquisa.id}`}
+            imagemCapa={pesquisa.data.imagemCapa}
+            includeDate={pesquisa.data.data}
+            ctaLabel="Ler Análise"
+          />
         ))}
       </div>
     </div>

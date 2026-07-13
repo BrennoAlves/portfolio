@@ -1,25 +1,30 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import TagBadges from "../components/TagBadges.astro";
+import ProjectCard from "../components/ProjectCard.astro";
 import ResearchCard from "../components/ResearchCard.astro";
 import { projetosDestaque } from "../consts";
 import { getCollection } from "astro:content";
+import { Image, getImage } from "astro:assets";
+import perfilFoto from "../assets/perfil.webp";
 
 const pesquisas = await getCollection("pesquisas");
 
-const homeDescription = "Sócio na DataClix. De estagiário de dados a analista a sócio — projetos e pesquisas em dados, automação e gestão de desenvolvimento.";
+const homeDescription = "Sócio na DataClix. De estagiário de dados a analista a sócio. Projetos e pesquisas em dados, automação e gestão de desenvolvimento.";
+
+const perfilOtimizado = await getImage({ src: perfilFoto, width: perfilFoto.width, height: perfilFoto.height });
 
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Brenno Alves",
   "jobTitle": "CEO",
+  "image": new URL(perfilOtimizado.src, Astro.site).toString(),
   "worksFor": {
     "@type": "Organization",
     "name": "DataClix",
     "url": "https://www.dataclix.com.br/"
   },
-  "url": "https://brennoalves.com.br",
+  "url": "https://brennoalves.com",
   "sameAs": [
     "https://www.linkedin.com/in/brennonogueiraalves/",
     "https://github.com/BrennoAlves"
@@ -50,11 +55,11 @@ const skills = [
       <article class="md:flex-row-reverse md:justify-end md:gap-12">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="col-span-2 flex flex-col gap-4 md:gap-6 my-auto">
-            <h1 class="text-3xl">Prazer, Brenno.</h1>
-            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70">
+            <h1 class="text-3xl hero-title">Prazer, Brenno.</h1>
+            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70 hero-in" style="--d: 350ms">
               Trabalho com dados e tecnologia. Fiz meu primeiro curso de programação aos 10 anos. Fui pra Economia por causa da estatística, comecei como estagiário de dados, virei analista e hoje sou sócio na <a class="font-normal text-primary" href="https://www.dataclix.com.br/">DataClix</a>, onde trabalho com dados e gestão de projetos de desenvolvimento. Este site tem alguns desses projetos de estudos. Nas horas vagas, faço pão, tento tocar baixo e cuido da minha gata gorda.
             </p>
-            <div class="nav">
+            <div class="nav hero-in" style="--d: 500ms">
               <ul>
                 <li>
                   <a href="https://www.linkedin.com/in/brennonogueiraalves/" rel="noreferrer" target="_blank" aria-label="LinkedIn do Brenno">
@@ -81,10 +86,10 @@ const skills = [
               </ul>
             </div>
           </div>
-          <div class="mx-auto mt-6 sm:mt-0">
+          <div class="mx-auto mt-6 sm:mt-0 hero-photo" style="--d: 250ms">
             <div class="avatar flex-items-center mx-auto sm:flex-row">
               <div class="w-60 rounded">
-                <img src="/perfil.webp" alt="Foto do Brenno" loading="lazy" decoding="async" />
+                <Image src={perfilFoto} alt="Foto do Brenno" loading="eager" fetchpriority="high" decoding="async" width={240} height={320} />
               </div>
             </div>
           </div>
@@ -93,8 +98,8 @@ const skills = [
 
       <section class="flex flex-col gap-4">
         <div class="flex flex-col gap-3">
-          {skills.map((grupo) => (
-            <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+          {skills.map((grupo, i) => (
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2" data-reveal style={`--reveal-i: ${i}`}>
               <span class="text-xs opacity-50 uppercase tracking-widest w-full sm:w-auto sm:min-w-[10rem]">{grupo.area}</span>
               <div class="flex flex-wrap gap-2">
                 {grupo.items.map((item) => (
@@ -107,47 +112,35 @@ const skills = [
       </section>
 
       <section class="flex flex-col gap-6">
-        <div class="text-center">
+        <div class="text-center" data-reveal>
           <h2 class="text-2xl">Projetos e Pesquisas</h2>
         </div>
 
         <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
           {projetosDestaque.map(([nome, projeto]) => (
-            <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl card-animate">
-              <div class="card-body p-5 flex flex-col">
-                <div class="flex items-start justify-between mb-3">
-                  <h3 class="text-lg font-semibold flex-1">{nome}</h3>
-                </div>
-
-                <p class="text-base-content/70 text-sm leading-relaxed mb-4">
-                  {projeto.descricao}
-                </p>
-
-                <div class="mb-4">
-                  <TagBadges tags={projeto.tags} maxTags={3} />
-                </div>
-
-                <div class="card-actions justify-end mt-auto">
-                  <a href={projeto.url} target="_blank" rel="noopener" class="btn btn-outline btn-sm">
-                    Ver Projeto
-                  </a>
-                </div>
-              </div>
-            </div>
+            <ProjectCard
+              nome={nome}
+              descricao={projeto.descricao}
+              tags={projeto.tags}
+              url={projeto.url}
+              maxTags={3}
+              headingLevel="h3"
+            />
           ))}
           {pesquisas.map((pesquisa) => (
             <ResearchCard
               titulo={pesquisa.data.titulo}
               descricao={pesquisa.data.descricao}
               tags={pesquisa.data.tags}
-              url={`/pesquisas/${pesquisa.slug}`}
+              url={`/pesquisas/${pesquisa.id}`}
               imagemCapa={pesquisa.data.imagemCapa}
               maxTags={3}
+              headingLevel="h3"
             />
           ))}
         </div>
 
-        <div class="flex gap-4 justify-center flex-wrap mt-4">
+        <div class="flex gap-4 justify-center flex-wrap mt-4" data-reveal>
           <a href="/projetos" class="btn btn-outline">Outros Projetos</a>
           <a href="/pesquisas" class="btn btn-outline">Outras Pesquisas</a>
         </div>
@@ -155,3 +148,110 @@ const skills = [
     </div>
   </main>
 </Layout>
+
+<style>
+  .hero-in {
+    opacity: 0;
+    animation: heroIn 800ms var(--ease-out-strong) forwards;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes heroIn {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .hero-photo {
+    opacity: 0;
+    animation: photoIn 900ms var(--ease-out-strong) forwards;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes photoIn {
+    from {
+      opacity: 0;
+      transform: scale(0.94) translateY(12px);
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-in,
+    .hero-photo {
+      animation-name: heroFadeOnly;
+    }
+    @keyframes heroFadeOnly {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
+</style>
+
+{/* is:inline: o minificador (lightningcss) descarta animation-timeline; inline pula o pipeline */}
+<style is:inline>
+  @supports (animation-timeline: scroll()) {
+    .hero-photo img {
+      animation: heroParallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0px 500px;
+    }
+
+    @keyframes heroParallax {
+      to {
+        transform: translateY(36px);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-photo img {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // título decodifica de glifos embaralhados, esquerda → direita
+  function scramble() {
+    const el = document.querySelector('.hero-title');
+    if (!(el instanceof HTMLElement) || el.dataset.done) return;
+    el.dataset.done = '1';
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const titulo = el; // narrowing não sobrevive a closures
+    const alvo = el.textContent?.trim() ?? '';
+    if (!alvo) return;
+    const glifos = '01<>[]{}/#$%&*+=~';
+    const dur = 900;
+    const t0 = performance.now();
+    function frame(agora: number) {
+      const p = Math.min(1, (agora - t0) / dur);
+      const travados = Math.floor(alvo.length * p);
+      let saida = '';
+      for (let i = 0; i < alvo.length; i++) {
+        const c = alvo[i];
+        saida += i < travados || c === ' ' || c === ',' || c === '.'
+          ? c
+          : glifos[(Math.random() * glifos.length) | 0];
+      }
+      titulo.textContent = saida;
+      if (p < 1) setTimeout(() => requestAnimationFrame(frame), 35);
+      else titulo.textContent = alvo;
+    }
+    requestAnimationFrame(frame);
+  }
+  scramble();
+  document.addEventListener('astro:page-load', scramble);
+</script>

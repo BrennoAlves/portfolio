@@ -8,5 +8,5 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   output: 'static',
-  site: 'https://brennoalves.com',
+  site: 'https://www.brennoalves.com',
 });

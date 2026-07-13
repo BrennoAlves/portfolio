@@ -9,6 +9,7 @@
         "@astrojs/sitemap": "^3.6.0",
         "@astrojs/tailwind": "^6.0.2",
         "astro": "^5.13.4",
+        "cuelume": "^0.1.0",
         "tailwindcss": "^3.4.18",
         "typescript": "^5.6.3",
       },
@@ -387,6 +388,8 @@
     "cssesc": ["cssesc@3.0.0", "", { "bin": { "cssesc": "bin/cssesc" } }, "sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg=="],
 
     "csso": ["csso@5.0.5", "", { "dependencies": { "css-tree": "~2.2.0" } }, "sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ=="],
+
+    "cuelume": ["cuelume@0.1.0", "", {}, "sha512-J2RRt92Gh1a0ztnjwLEyLfGnDIiWz14vC9aTmg7ZgxRkEk8vR+QxFOz+v1tqntFvl06n5G4si8QCQgHfWjnneA=="],
 
     "daisyui": ["daisyui@5.5.11", "", {}, "sha512-xQ1JIgYbhKe9DKhFtOWAKf91F1mK3HECa5xoINmSHMqW9KjEP+yOWttTN1K7zOwuDmk68CbovCDbMKLVtDmPBQ=="],
 

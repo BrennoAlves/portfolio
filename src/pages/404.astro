@@ -2,31 +2,36 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="404 - Ops! | Brenno Alves">
+<Layout title="404, fora do intervalo | Brenno Alves">
   <main>
     <div class="error-container">
       <div class="content-wrapper">
-        <h1 class="glitch" data-text="404">404</h1>
-        <h2 class="subtitle">Página não encontrada!</h2>
-        <p class="message">Mas já que você tá aqui... que tal um joguinho?</p>
+        <p class="eyebrow">erro 404</p>
+        <h1 class="err-title">Essa página saiu do intervalo de confiança.</h1>
+        <p class="message">
+          O endereço que você tentou não está na amostra. Mas já que chegou até aqui,
+          tenta manter a linha dentro do intervalo. Aviso, é mais difícil do que parece.
+        </p>
 
-        <div class="game-section">
-          <div class="game-header">
-            <div class="score">Pontos: <span id="score">0</span></div>
-            <div class="high-score">Recorde: <span id="highScore">0</span></div>
-            <div class="lives">Vidas: <span id="lives">3</span></div>
+        <div class="game-card">
+          <div class="game-hud">
+            <span>n = <span id="gn">0</span></span>
+            <span id="gstate">clique ou aperte espaço</span>
+            <span>recorde <span id="grecord">0</span></span>
           </div>
-          <canvas id="game" width="600" height="500"></canvas>
-
-          <div class="game-controls">
-            <p class="instructions">Mova o mouse para controlar a raquete</p>
-            <button id="restartBtn" class="btn-game">Novo Jogo</button>
+          <canvas
+            id="game"
+            aria-label="Joguinho, mantenha a linha do gráfico dentro do intervalo entre as barras"
+          ></canvas>
+          <div class="game-foot">
+            <p class="instructions">clique, toque ou espaço pra linha subir</p>
+            <button id="restartBtn" class="btn btn-outline btn-sm" hidden>Jogar de novo</button>
           </div>
         </div>
 
         <div class="nav-buttons">
-          <a href="/" class="btn btn-outline">← Voltar para Home</a>
-          <a href="/projetos" class="btn btn-outline">Ver Projetos</a>
+          <a href="/" class="btn btn-outline">← Voltar pra home</a>
+          <a href="/projetos" class="btn btn-outline">Ver projetos</a>
         </div>
       </div>
     </div>
@@ -35,443 +40,460 @@ import Layout from "../layouts/Layout.astro";
 
 <style>
   .error-container {
-    min-height: 80vh;
+    min-height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 1rem 0;
   }
 
   .content-wrapper {
-    max-width: 600px;
+    max-width: 40rem;
     width: 100%;
-    text-align: center;
   }
 
-  .glitch {
-    font-size: clamp(4rem, 15vw, 10rem);
-    font-weight: 900;
-    margin: 0;
-    position: relative;
-    color: hsl(var(--p));
-    animation: glitch 1.5s infinite;
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.5;
+    margin-bottom: 0.75rem;
   }
 
-  .glitch::before,
-  .glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .glitch::before {
-    animation: glitch-1 2s infinite;
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-    transform: translate(-0.025em, -0.0125em);
-    opacity: 0.8;
-  }
-
-  .glitch::after {
-    animation: glitch-2 2s infinite;
-    clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
-    transform: translate(0.0125em, 0.025em);
-    opacity: 0.8;
-  }
-
-  @keyframes glitch {
-    0% { text-shadow: 0.05em 0 0 hsl(var(--s)), -0.05em -0.025em 0 hsl(var(--a)); }
-    15% { text-shadow: -0.05em -0.025em 0 hsl(var(--s)), 0.025em 0.025em 0 hsl(var(--a)); }
-    49% { text-shadow: -0.05em -0.025em 0 hsl(var(--s)), 0.025em 0.025em 0 hsl(var(--a)); }
-    50% { text-shadow: 0.025em 0.05em 0 hsl(var(--s)), 0.05em 0 0 hsl(var(--a)); }
-    99% { text-shadow: 0.025em 0.05em 0 hsl(var(--s)), 0.05em 0 0 hsl(var(--a)); }
-    100% { text-shadow: -0.025em 0 0 hsl(var(--s)), -0.025em -0.025em 0 hsl(var(--a)); }
-  }
-
-  @keyframes glitch-1 {
-    0% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(-0.025em, -0.0125em); }
-    10% { clip-path: polygon(0 15%, 100% 15%, 100% 60%, 0 60%); transform: translate(0.025em, 0.0125em); }
-    20% { clip-path: polygon(0 70%, 100% 70%, 100% 100%, 0 100%); transform: translate(-0.025em, 0.0125em); }
-    30% { clip-path: polygon(0 0, 100% 0, 100% 30%, 0 30%); transform: translate(0.025em, -0.0125em); }
-    100% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); transform: translate(-0.025em, -0.0125em); }
-  }
-
-  @keyframes glitch-2 {
-    0% { clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%); transform: translate(0.0125em, 0.025em); }
-    10% { clip-path: polygon(0 40%, 100% 40%, 100% 85%, 0 85%); transform: translate(-0.0125em, 0.025em); }
-    20% { clip-path: polygon(0 0, 100% 0, 100% 25%, 0 25%); transform: translate(0.0125em, -0.025em); }
-    30% { clip-path: polygon(0 75%, 100% 75%, 100% 100%, 0 100%); transform: translate(-0.0125em, 0.025em); }
-    100% { clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%); transform: translate(0.0125em, 0.025em); }
-  }
-
-  .subtitle {
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-    margin: 1rem 0;
-    font-weight: 700;
+  .err-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-size: clamp(1.5rem, 4.5vw, 2.25rem);
+    line-height: 1.2;
+    margin-bottom: 1rem;
   }
 
   .message {
-    font-size: 1.2rem;
-    opacity: 0.8;
+    opacity: 0.7;
+    line-height: 1.6;
     margin-bottom: 2rem;
+    max-width: 34rem;
   }
 
-  .game-section {
-    background: hsl(var(--b2));
-    border-radius: 1rem;
-    padding: 2rem;
-    margin: 2rem 0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  .game-card {
+    border: 1px solid var(--color-base-300);
+    border-radius: var(--radius-box);
+    background: var(--color-base-100);
+    padding: 1rem;
   }
 
-  .game-header {
+  .game-hud {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    flex-wrap: wrap;
+    justify-content: space-between;
     gap: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.7;
+    padding: 0 0.25rem 0.75rem;
   }
 
   #game {
-    width: 100%;
-    max-width: 600px;
-    height: auto;
-    aspect-ratio: 6/5;
-    border: 3px solid hsl(var(--p));
-    border-radius: 0.5rem;
-    background: #1a1d24;
     display: block;
-    margin: 0 auto;
-    cursor: none;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-base-300);
+    border-radius: calc(var(--radius-box) - 0.25rem);
+    cursor: pointer;
+    touch-action: manipulation;
   }
 
-  .game-controls {
-    margin-top: 1.5rem;
+  .game-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0.25rem 0;
+    min-height: 2.5rem;
   }
 
   .instructions {
-    font-size: 0.9rem;
-    opacity: 0.7;
-    margin-bottom: 1rem;
-  }
-
-  .btn-game {
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffffff;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
-                box-shadow 200ms ease,
-                background-color 200ms ease;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-  }
-
-  .btn-game:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-    background: linear-gradient(135deg, #2563eb, #7c3aed);
-  }
-
-  .btn-game:active {
-    transform: translateY(0) scale(0.97);
-    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .glitch,
-    .glitch::before,
-    .glitch::after {
-      animation: none;
-    }
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    opacity: 0.5;
   }
 
   .nav-buttons {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
-    justify-content: center;
     margin-top: 2rem;
   }
 
   @media (max-width: 640px) {
-    .game-section {
-      padding: 1rem;
+    #game {
+      aspect-ratio: 4 / 3;
     }
 
-    .nav-buttons {
-      flex-direction: column;
+    .game-hud #gstate {
+      display: none;
     }
   }
 </style>
 
 <script>
-  const canvas = document.getElementById('game') as HTMLCanvasElement;
-  const ctx = canvas.getContext('2d')!;
-  const scoreEl = document.getElementById('score')!;
-  const highScoreEl = document.getElementById('highScore')!;
-  const livesEl = document.getElementById('lives')!;
-  const restartBtn = document.getElementById('restartBtn')!;
+  import { play } from 'cuelume';
 
-  // Configurações do jogo
-  const paddleHeight = 12;
-  const paddleWidth = 100;
-  let paddleX = (canvas.width - paddleWidth) / 2;
+  function initSparkline404() {
+    const canvas = document.getElementById('game');
+    if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.on) return;
+    canvas.dataset.on = '1';
+    const cv = canvas; // narrowing não sobrevive a closures
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    const g = ctx;
 
-  const ballRadius = 8;
-  let ballX = canvas.width / 2;
-  let ballY = canvas.height - 30;
-  let ballDX = 4;
-  let ballDY = -4;
+    const nEl = document.getElementById('gn');
+    const recordEl = document.getElementById('grecord');
+    const stateEl = document.getElementById('gstate');
+    const restartBtn = document.getElementById('restartBtn');
 
-  const brickRowCount = 5;
-  const brickColumnCount = 9;
-  const brickWidth = 60;
-  const brickHeight = 20;
-  const brickPadding = 5;
-  const brickOffsetTop = 60;
-  const brickOffsetLeft = 20;
+    let w = 0, h = 0, dpr = 1;
 
-  let score = 0;
-  let highScore = 0;
-  let lives = 3;
-  let gameLoop: number;
+    // cores do tema, cacheadas e renovadas quando o data-theme muda
+    let cor = { primary: '', content: '', base200: '', base300: '', error: '' };
+    function leCores() {
+      const s = getComputedStyle(document.documentElement);
+      cor = {
+        primary: s.getPropertyValue('--color-primary').trim(),
+        content: s.getPropertyValue('--color-base-content').trim(),
+        base200: s.getPropertyValue('--color-base-200').trim(),
+        base300: s.getPropertyValue('--color-base-300').trim(),
+        error: s.getPropertyValue('--color-error').trim(),
+      };
+    }
+    leCores();
+    new MutationObserver(() => {
+      leCores();
+      if (modo !== 'playing') desenha(); // parado ninguém repinta, troca de tema precisa
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
 
-  const bricks: { x: number; y: number; status: number; color: string }[][] = [];
-  const brickColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'];
+    // estado do jogo
+    type Modo = 'idle' | 'playing' | 'dead';
+    let modo: Modo = 'idle';
+    let n = 0;
+    let recorde = 0;
+    try {
+      recorde = parseInt(localStorage.getItem('sparkline404Record') || '0') || 0;
+    } catch { /* sem storage, sem recorde */ }
+    if (recordEl) recordEl.textContent = String(recorde);
 
-  // Carregar high score
-  try {
-    highScore = parseInt(localStorage.getItem('breakout404HighScore') || '0');
-  } catch (e) {
-    highScore = 0;
-  }
-  highScoreEl.textContent = highScore.toString();
-  livesEl.textContent = lives.toString();
+    // jogador: ponta da série no x fixo, trilha atrás
+    let py = 0;       // posição y (px de canvas)
+    let vy = 0;       // velocidade y
+    const trail: number[] = []; // y das últimas posições, 1 por coluna de trilha
 
-  // Inicializar blocos
-  function initBricks() {
-    for (let c = 0; c < brickColumnCount; c++) {
-      bricks[c] = [];
-      for (let r = 0; r < brickRowCount; r++) {
-        bricks[c][r] = {
-          x: c * (brickWidth + brickPadding) + brickOffsetLeft,
-          y: r * (brickHeight + brickPadding) + brickOffsetTop,
-          status: 1,
-          color: brickColors[r]
-        };
+    // barras (pares teto/chão com gap)
+    type Barra = { x: number; gapY: number; gapH: number; passou: boolean };
+    let barras: Barra[] = [];
+    let proximaBarraEm = 0; // px até spawnar a próxima
+    let vel = 0;            // velocidade horizontal atual (px/s)
+
+    function resize() {
+      const bw = cv.offsetWidth, bh = cv.offsetHeight;
+      if (!bw || !bh) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = cv.width = bw * dpr;
+      h = cv.height = bh * dpr;
+      if (modo !== 'playing') {
+        py = h / 2;
+        desenha(); // mudar width/height limpa o canvas; repinta o frame parado
       }
     }
-  }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
 
-  function drawBall() {
-    ctx.beginPath();
-    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-    ctx.fillStyle = '#5eead4';
-    ctx.fill();
-    ctx.strokeStyle = '#2dd4bf';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.closePath();
-  }
+    const PX = () => w * 0.28;            // x fixo do jogador
+    const GRAV = () => h * 2.6;           // px/s²
+    const IMPULSO = () => -h * 0.72;      // px/s
+    const VEL_BASE = () => w * 0.34;      // px/s inicial
+    const TRAIL_STEP = () => Math.max(3 * dpr, w / 160); // espaçamento da trilha
 
-  function drawPaddle() {
-    ctx.beginPath();
-    ctx.roundRect(paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight, 6);
-    const gradient = ctx.createLinearGradient(paddleX, 0, paddleX + paddleWidth, 0);
-    gradient.addColorStop(0, '#3b82f6');
-    gradient.addColorStop(1, '#8b5cf6');
-    ctx.fillStyle = gradient;
-    ctx.fill();
-    ctx.closePath();
-  }
+    function dificuldade() {
+      // velocidade sobe e gap fecha devagar, com teto
+      const f = Math.min(n / 40, 1);
+      vel = VEL_BASE() * (1 + f * 0.9);
+      return {
+        gapH: h * (0.34 - f * 0.12),
+        entreBarras: w * (0.34 - f * 0.08),
+      };
+    }
 
-  function drawBricks() {
-    for (let c = 0; c < brickColumnCount; c++) {
-      for (let r = 0; r < brickRowCount; r++) {
-        if (bricks[c][r].status === 1) {
-          const b = bricks[c][r];
-          ctx.beginPath();
-          ctx.roundRect(b.x, b.y, brickWidth, brickHeight, 4);
-          ctx.fillStyle = b.color;
-          ctx.fill();
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-          ctx.lineWidth = 1;
-          ctx.stroke();
-          ctx.closePath();
+    function spawnBarra() {
+      const { gapH } = dificuldade();
+      const margem = h * 0.12;
+      const gapY = margem + Math.random() * (h - gapH - margem * 2);
+      barras.push({ x: w + w * 0.06, gapY, gapH, passou: false });
+    }
+
+    function reset() {
+      n = 0;
+      py = h / 2;
+      vy = 0;
+      trail.length = 0;
+      barras = [];
+      proximaBarraEm = w * 0.15;
+      dificuldade();
+      if (nEl) nEl.textContent = '0';
+    }
+
+    function comeca() {
+      reset();
+      modo = 'playing';
+      if (stateEl) stateEl.textContent = 'dentro do intervalo';
+      if (restartBtn) restartBtn.hidden = true;
+      vy = IMPULSO() * 0.6;
+      ultimoT = performance.now();
+      agenda();
+    }
+
+    function morre() {
+      modo = 'dead';
+      play('whisper');
+      if (stateEl) stateEl.textContent = 'fora do intervalo';
+      if (restartBtn) restartBtn.hidden = false;
+      if (n > recorde) {
+        recorde = n;
+        if (recordEl) recordEl.textContent = String(recorde);
+        try { localStorage.setItem('sparkline404Record', String(recorde)); } catch { /* ok */ }
+      }
+      desenha(); // frame final com a mensagem
+    }
+
+    function pulo() {
+      if (modo === 'playing') {
+        vy = IMPULSO();
+      } else {
+        comeca();
+      }
+    }
+
+    // ---- desenho ----
+
+    function desenhaBarras() {
+      g.fillStyle = cor.base300;
+      g.strokeStyle = `color-mix(in oklch, ${cor.content} 25%, transparent)`;
+      g.lineWidth = 1 * dpr;
+      const bw = w * 0.055;
+      for (const b of barras) {
+        // teto
+        g.beginPath();
+        g.roundRect(b.x, -4 * dpr, bw, b.gapY + 4 * dpr, 3 * dpr);
+        g.fill();
+        g.stroke();
+        // chão
+        const yBaixo = b.gapY + b.gapH;
+        g.beginPath();
+        g.roundRect(b.x, yBaixo, bw, h - yBaixo + 4 * dpr, 3 * dpr);
+        g.fill();
+        g.stroke();
+      }
+    }
+
+    function desenhaLinha() {
+      if (!trail.length) return;
+      const step = TRAIL_STEP();
+      const x0 = PX() - (trail.length - 1) * step;
+
+      // área sob a linha, cara de gráfico de área
+      g.beginPath();
+      g.moveTo(x0, trail[0]);
+      for (let i = 1; i < trail.length; i++) g.lineTo(x0 + i * step, trail[i]);
+      g.lineTo(PX(), py);
+      g.lineTo(PX(), h);
+      g.lineTo(x0, h);
+      g.closePath();
+      const grad = g.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, `color-mix(in oklch, ${cor.primary} 18%, transparent)`);
+      grad.addColorStop(1, `color-mix(in oklch, ${cor.primary} 2%, transparent)`);
+      g.fillStyle = grad;
+      g.fill();
+
+      // a linha em si
+      g.beginPath();
+      g.moveTo(x0, trail[0]);
+      for (let i = 1; i < trail.length; i++) g.lineTo(x0 + i * step, trail[i]);
+      g.lineTo(PX(), py);
+      g.strokeStyle = cor.primary;
+      g.lineWidth = 2 * dpr;
+      g.lineJoin = 'round';
+      g.stroke();
+
+      // ponto na ponta, marcador de série
+      g.beginPath();
+      g.arc(PX(), py, 3.5 * dpr, 0, 6.2832);
+      g.fillStyle = modo === 'dead' ? cor.error : cor.primary;
+      g.fill();
+    }
+
+    function desenhaGrade() {
+      // linhas de grade horizontais, bem fracas, cara de gráfico
+      g.strokeStyle = cor.base300;
+      g.lineWidth = 1;
+      g.globalAlpha = 0.35;
+      for (let i = 1; i < 4; i++) {
+        const y = (h / 4) * i;
+        g.beginPath();
+        g.moveTo(0, y);
+        g.lineTo(w, y);
+        g.stroke();
+      }
+      g.globalAlpha = 1;
+    }
+
+    function texto(linhas: [string, number][]) {
+      g.textAlign = 'center';
+      g.fillStyle = cor.content;
+      let y = h / 2 - (linhas.length - 1) * 14 * dpr;
+      for (const [t, tam] of linhas) {
+        g.font = `500 ${tam * dpr}px "IBM Plex Mono", monospace`;
+        g.fillText(t, w / 2, y);
+        y += 28 * dpr;
+      }
+    }
+
+    function desenha() {
+      g.clearRect(0, 0, w, h);
+      desenhaGrade();
+      desenhaBarras();
+      desenhaLinha();
+
+      if (modo === 'idle') {
+        texto([['clique ou aperte espaço', 13]]);
+      } else if (modo === 'dead') {
+        g.globalAlpha = 0.92;
+        texto([[`fora do intervalo com n = ${n}`, 14], [n >= recorde && n > 0 ? 'novo recorde' : 'clique pra tentar de novo', 11]]);
+        g.globalAlpha = 1;
+      }
+    }
+
+    // ---- loop ----
+
+    let raf = 0;
+    let ultimoT = 0;
+    let rodando = false;
+
+    function agenda() {
+      if (!rodando) {
+        rodando = true;
+        raf = requestAnimationFrame(tick);
+      }
+    }
+
+    function para() {
+      rodando = false;
+      cancelAnimationFrame(raf);
+    }
+
+    function tick(agora: number) {
+      if (!rodando) return;
+      if (!w || !h) resize();
+      const dt = Math.min((agora - ultimoT) / 1000, 0.032);
+      ultimoT = agora;
+
+      if (modo === 'playing') {
+        // física do jogador
+        vy += GRAV() * dt;
+        py += vy * dt;
+
+        // trilha anda na mesma velocidade das barras
+        trail.push(py);
+        const maxTrail = Math.floor((PX()) / TRAIL_STEP()) + 1;
+        while (trail.length > maxTrail) trail.shift();
+
+        // barras andam
+        const { entreBarras } = dificuldade();
+        proximaBarraEm -= vel * dt;
+        if (proximaBarraEm <= 0) {
+          spawnBarra();
+          proximaBarraEm = entreBarras;
         }
-      }
-    }
-  }
+        const bw = w * 0.055;
+        for (const b of barras) {
+          b.x -= vel * dt;
+          if (!b.passou && b.x + bw < PX()) {
+            b.passou = true;
+            n++;
+            if (nEl) nEl.textContent = String(n);
+            play(n % 10 === 0 ? 'sparkle' : 'droplet');
+          }
+        }
+        barras = barras.filter((b) => b.x + bw > -w * 0.02);
 
-  function collisionDetection() {
-    for (let c = 0; c < brickColumnCount; c++) {
-      for (let r = 0; r < brickRowCount; r++) {
-        const b = bricks[c][r];
-        if (b.status === 1) {
-          if (ballX > b.x && ballX < b.x + brickWidth && ballY > b.y && ballY < b.y + brickHeight) {
-            ballDY = -ballDY;
-            b.status = 0;
-            score++;
-            scoreEl.textContent = score.toString();
-
-            if (score > highScore) {
-              highScore = score;
-              highScoreEl.textContent = highScore.toString();
-              try {
-                localStorage.setItem('breakout404HighScore', highScore.toString());
-              } catch (e) {
-                console.log('Não foi possível salvar');
-              }
-            }
-
-            // Verificar vitória
-            if (score === brickRowCount * brickColumnCount) {
-              gameWin();
+        // teto só segura (matar ali é injusto com quem clica rápido); chão mata
+        const r = 4 * dpr;
+        if (py < r) {
+          py = r;
+          vy = 0;
+        }
+        if (py > h - r) {
+          morre();
+          return;
+        }
+        for (const b of barras) {
+          if (PX() + r > b.x && PX() - r < b.x + bw) {
+            if (py - r < b.gapY || py + r > b.gapY + b.gapH) {
+              morre();
+              return;
             }
           }
         }
       }
-    }
-  }
 
-  function gameWin() {
-    cancelAnimationFrame(gameLoop);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = '#22c55e';
-    ctx.font = 'bold 50px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Você Venceu!', canvas.width / 2, canvas.height / 2 - 30);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '24px sans-serif';
-    ctx.fillText(`Pontos: ${score}`, canvas.width / 2, canvas.height / 2 + 20);
-  }
-
-  function gameOver() {
-    cancelAnimationFrame(gameLoop);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 50px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2 - 30);
-
-    ctx.font = '24px sans-serif';
-    ctx.fillText(`Pontos: ${score}`, canvas.width / 2, canvas.height / 2 + 20);
-
-    if (score === highScore && score > 0) {
-      ctx.font = '20px sans-serif';
-      ctx.fillStyle = '#5eead4';
-      ctx.fillText('Novo Recorde!', canvas.width / 2, canvas.height / 2 + 60);
-    }
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Fundo
-    ctx.fillStyle = '#1a1d24';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    drawBricks();
-    drawBall();
-    drawPaddle();
-    collisionDetection();
-
-    // Colisão com paredes laterais
-    if (ballX + ballDX > canvas.width - ballRadius || ballX + ballDX < ballRadius) {
-      ballDX = -ballDX;
-    }
-
-    // Colisão com topo
-    if (ballY + ballDY < ballRadius) {
-      ballDY = -ballDY;
-    } else if (ballY + ballDY > canvas.height - ballRadius) {
-      // Verificar colisão com paddle
-      if (ballX > paddleX && ballX < paddleX + paddleWidth) {
-        // Adicionar efeito de ângulo baseado em onde bateu no paddle
-        const hitPos = (ballX - paddleX) / paddleWidth;
-        ballDX = (hitPos - 0.5) * 8;
-        ballDY = -ballDY;
+      desenha();
+      if (modo === 'playing') {
+        raf = requestAnimationFrame(tick);
       } else {
-        // Perdeu uma vida
-        lives--;
-        livesEl.textContent = lives.toString();
-
-        if (lives === 0) {
-          gameOver();
-          return;
-        } else {
-          // Resetar posição da bola
-          ballX = canvas.width / 2;
-          ballY = canvas.height - 30;
-          ballDX = 4;
-          ballDY = -4;
-          paddleX = (canvas.width - paddleWidth) / 2;
-        }
+        rodando = false;
       }
     }
 
-    ballX += ballDX;
-    ballY += ballDY;
+    // ---- input ----
 
-    gameLoop = requestAnimationFrame(draw);
+    cv.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      pulo();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code !== 'Space' && e.code !== 'ArrowUp') return;
+      // só captura o teclado com o jogo rolando ou com o canvas em foco/visível
+      if (modo === 'playing') {
+        e.preventDefault();
+        pulo();
+      } else if (document.activeElement === cv || document.activeElement === restartBtn) {
+        e.preventDefault();
+        pulo();
+      }
+    });
+    cv.tabIndex = 0;
+
+    restartBtn?.addEventListener('click', comeca);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && modo === 'playing') {
+        para();
+        modo = 'idle';
+        if (stateEl) stateEl.textContent = 'pausado, clique pra voltar';
+        desenha();
+      }
+    });
+
+    // primeiro frame parado (idle), nada anima sem gesto do usuário
+    py = h / 2;
+    desenha();
   }
 
-  function resetGame() {
-    score = 0;
-    lives = 3;
-    ballX = canvas.width / 2;
-    ballY = canvas.height - 30;
-    ballDX = 4;
-    ballDY = -4;
-    paddleX = (canvas.width - paddleWidth) / 2;
-
-    scoreEl.textContent = '0';
-    livesEl.textContent = '3';
-
-    initBricks();
-    cancelAnimationFrame(gameLoop);
-    draw();
-  }
-
-  // Controle do mouse
-  canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    paddleX = mouseX - paddleWidth / 2;
-
-    // Limitar paddle dentro do canvas
-    if (paddleX < 0) paddleX = 0;
-    if (paddleX + paddleWidth > canvas.width) paddleX = canvas.width - paddleWidth;
-  });
-
-  // Controle touch para mobile
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const rect = canvas.getBoundingClientRect();
-    const touch = e.touches[0];
-    const mouseX = touch.clientX - rect.left;
-    paddleX = mouseX - paddleWidth / 2;
-
-    if (paddleX < 0) paddleX = 0;
-    if (paddleX + paddleWidth > canvas.width) paddleX = canvas.width - paddleWidth;
-  }, { passive: false });
-
-  restartBtn.addEventListener('click', resetGame);
-
-  // Iniciar jogo
-  initBricks();
-  draw();
+  initSparkline404();
+  document.addEventListener('astro:page-load', initSparkline404);
 </script>

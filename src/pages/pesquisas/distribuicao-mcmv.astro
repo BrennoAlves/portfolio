@@ -4,14 +4,14 @@ import ImageGallery from "../../components/ImageGallery.astro";
 import ArticleHeader from "../../components/ArticleHeader.astro";
 import MethodologySection from "../../components/MethodologySection.astro";
 import { TITULO_SITE } from "../../consts";
-import { getEntry } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 import '../../styles/prose.css';
 
 const entry = await getEntry('pesquisas', 'distribuicao-mcmv');
 if (!entry) {
   throw new Error('Pesquisa não encontrada');
 }
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 const { titulo, subtitulo, tags, data } = entry.data;
 
 const articleSchema = {
@@ -55,7 +55,7 @@ const metodologia = [
 
 <Layout title={`${titulo} | ${TITULO_SITE}`} description={entry.data.descricao} jsonLd={articleSchema}>
   <article class="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-12 animate-fade-in">
-    <ArticleHeader title={titulo} subtitle={subtitulo} tags={tags} date={data} transitionName={`pesquisa-titulo-${entry.slug}`} />
+    <ArticleHeader title={titulo} subtitle={subtitulo} tags={tags} date={data} transitionName={`pesquisa-titulo-${entry.id}`} />
 
     <ImageGallery>
       <div class="prose-custom max-w-none">

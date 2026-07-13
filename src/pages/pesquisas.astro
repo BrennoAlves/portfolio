@@ -28,7 +28,7 @@ const pesquisas = await getCollection('pesquisas');
               />
             </figure>
             <div class="card-body p-6 flex flex-col">
-              <h2 class="card-title text-xl font-semibold" transition:name={`pesquisa-titulo-${pesquisa.slug}`}>
+              <h2 class="card-title text-xl font-semibold" transition:name={`pesquisa-titulo-${pesquisa.id}`}>
                 {pesquisa.data.titulo}
               </h2>
 
@@ -41,7 +41,7 @@ const pesquisas = await getCollection('pesquisas');
               </div>
 
               <div class="card-actions justify-end mt-auto">
-                <a href={`/pesquisas/${pesquisa.slug}`} class="btn btn-outline btn-sm">
+                <a href={`/pesquisas/${pesquisa.id}`} class="btn btn-outline btn-sm">
                   Ler Análise
                 </a>
               </div>

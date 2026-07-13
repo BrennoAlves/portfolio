@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: nord --default, business;
+}
+
+/* preserva o override de borda fina dos temas (antes no tailwind.config.mjs) */
+@plugin "daisyui/theme" {
+  name: "nord";
+  --border: 1px;
+}
+
+@plugin "daisyui/theme" {
+  name: "business";
+  --border: 1px;
+}

@@ -4,18 +4,27 @@
   themes: nord --default, business;
 }
 
-/* preserva o override de borda fina dos temas (antes no tailwind.config.mjs) */
+/* preserva o override de borda fina dos temas (antes no tailwind.config.mjs)
+   e unifica o sistema de radius: um raio pequeno e consistente em tudo,
+   em vez do mix pill 80px + rounded-2xl que vinha dos defaults */
 @plugin "daisyui/theme" {
   name: "nord";
   --border: 1px;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.375rem;
+  --radius-box: 0.5rem;
 }
 
 @plugin "daisyui/theme" {
   name: "business";
   --border: 1px;
-  /* o business vem com cantos retos por padrão do daisyUI; o resto do site
-     é todo arredondado (botões, cards), então iguala ao nord aqui */
-  --radius-selector: 1rem;
+  --radius-selector: 0.25rem;
+  --radius-field: 0.375rem;
+  --radius-box: 0.5rem;
+}
+
+@theme {
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* foco visível consistente para quem navega por teclado.
@@ -40,8 +49,13 @@
 }
 
 .btn {
-  border-radius: 80px;
-  transition: transform 160ms var(--ease-out-strong);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  transition:
+    transform 160ms var(--ease-out-strong),
+    background-color var(--dur-base) var(--ease-out-strong),
+    border-color var(--dur-base) var(--ease-out-strong),
+    color var(--dur-base) var(--ease-out-strong);
 }
 
 .btn:active {
@@ -50,10 +64,86 @@
 
 .btn-outline {
   border-width: 1px;
+  border-color: var(--color-base-300);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .btn-outline:hover {
+    background: var(--color-base-content);
+    border-color: var(--color-base-content);
+    color: var(--color-base-100);
+  }
+}
+
+/* tags quietas: mono, hairline, sem arco-íris */
 .badge {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  height: auto;
+  padding: 0.25rem 0.55rem;
   border-width: 1px;
+  border-color: var(--color-base-300);
+  background: transparent;
+  color: color-mix(in oklch, var(--color-base-content) 75%, transparent);
+}
+
+/* cabeçalho de seção: título + régua + contagem (o n= do rodapé, ecoado) */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.section-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--color-base-300);
+  align-self: center;
+}
+
+.section-n {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.5;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* cta dos cards: link mono com seta que desliza */
+.card-cta {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5ch;
+  transition: color var(--dur-fast) ease;
+}
+
+.card-cta .cta-arrow {
+  transition: transform var(--dur-base) var(--ease-out-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-cta:hover {
+    color: var(--color-primary);
+  }
+
+  .card-cta:hover .cta-arrow {
+    transform: translateX(4px);
+  }
+}
+
+/* linha de metadados no topo do card */
+.card-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.5;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .container {
@@ -91,12 +181,18 @@
 }
 
 .logo {
-  font-size: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 1.0625rem;
   line-height: 1.75rem;
 }
 
+.logo .logo-path {
+  opacity: 0.45;
+}
+
 .nav {
-  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
   line-height: 1.25rem;
   padding-top: 0.5%;
 }
@@ -232,16 +328,42 @@ html.theme-switching::view-transition-new(root) {
   transform: none;
 }
 
+/* card plano com borda; nada de sombra flutuante de template */
+:root .card {
+  border: 1px solid var(--color-base-300);
+}
+
 /* cards com vida no hover (só ponteiro fino) */
 @media (hover: hover) and (pointer: fine) {
   :root .card {
     transition:
       transform 250ms var(--ease-out-strong),
+      border-color 250ms ease,
       box-shadow 250ms ease;
   }
 
   :root .card:hover {
     transform: translateY(-4px);
+    border-color: color-mix(in oklch, var(--color-primary) 45%, var(--color-base-300));
+    box-shadow: 0 12px 32px -16px color-mix(in oklch, var(--color-base-content) 25%, transparent);
+  }
+}
+
+/* ícones sociais: sobem e acendem, sem o sublinhado da nav */
+.social a::after {
+  display: none;
+}
+
+.social a {
+  transition:
+    transform var(--dur-base) var(--ease-out-strong),
+    color var(--dur-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .social a:hover {
+    transform: translateY(-2px);
+    color: var(--color-primary);
   }
 }
 
@@ -285,5 +407,9 @@ html.theme-switching::view-transition-new(root) {
   }
   .nav a::after {
     transition: none;
+  }
+  .social a:hover,
+  .card-cta:hover .cta-arrow {
+    transform: none;
   }
 }

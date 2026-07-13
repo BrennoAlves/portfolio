@@ -13,14 +13,15 @@ interface Props {
   includeDate?: string;
   headingLevel?: 'h2' | 'h3';
   ctaLabel?: string;
+  tipo?: string;
 }
 
-const { titulo, descricao, tags, url, imagemCapa, maxTags, includeDate, headingLevel = 'h2', ctaLabel = 'Ler Pesquisa' } = Astro.props;
+const { titulo, descricao, tags, url, imagemCapa, maxTags, includeDate, headingLevel = 'h2', ctaLabel = 'Ler pesquisa', tipo = 'Pesquisa' } = Astro.props;
 const slug = url.split('/').filter(Boolean).pop();
 const Titulo = headingLevel;
 ---
 
-<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-2xl card-animate">
+<div class="card bg-base-100 overflow-hidden card-animate">
   {imagemCapa && (
     <figure class="h-48 overflow-hidden">
       <Image
@@ -35,6 +36,11 @@ const Titulo = headingLevel;
     </figure>
   )}
   <div class="card-body p-6 flex flex-col">
+    <p class="card-kicker mb-2">
+      <span>{tipo}</span>
+      {includeDate && <span>{includeDate}</span>}
+    </p>
+
     <div class="flex items-start justify-between mb-3">
       <Titulo class="card-title text-xl font-semibold flex-1" transition:name={`pesquisa-titulo-${slug}`}>{titulo}</Titulo>
     </div>
@@ -44,12 +50,12 @@ const Titulo = headingLevel;
     </p>
 
     <div class="mb-6">
-      <TagBadges tags={tags} maxTags={maxTags} includeDate={includeDate} />
+      <TagBadges tags={tags} maxTags={maxTags} />
     </div>
 
     <div class="card-actions justify-end mt-auto">
-      <a href={url} class="btn btn-outline btn-sm">
-        {ctaLabel}
+      <a href={url} class="card-cta">
+        {ctaLabel}<span class="cta-arrow" aria-hidden="true">→</span>
       </a>
     </div>
   </div>

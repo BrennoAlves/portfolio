@@ -19,7 +19,11 @@ const projetosComArtigo = await getCollection('projetos');
 
       {projetosComArtigo.length > 0 && (
         <div class="flex flex-col gap-6">
-          <h2 class="text-xl font-semibold">Com artigo completo</h2>
+          <div class="section-head">
+            <h2 class="text-xl font-semibold">Com artigo completo</h2>
+            <span class="section-rule" aria-hidden="true"></span>
+            <span class="section-n">n = {projetosComArtigo.length}</span>
+          </div>
           <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
             {projetosComArtigo.map((projeto) => (
               <ResearchCard
@@ -28,7 +32,8 @@ const projetosComArtigo = await getCollection('projetos');
                 tags={projeto.data.tags}
                 url={`/projetos/${projeto.id}`}
                 includeDate={projeto.data.data}
-                ctaLabel="Ler Artigo"
+                ctaLabel="Ler artigo"
+                tipo="Artigo"
               />
             ))}
           </div>
@@ -36,7 +41,11 @@ const projetosComArtigo = await getCollection('projetos');
       )}
 
       <div class="flex flex-col gap-6">
-        <h2 class="text-xl font-semibold">Outros projetos</h2>
+        <div class="section-head">
+          <h2 class="text-xl font-semibold">Outros projetos</h2>
+          <span class="section-rule" aria-hidden="true"></span>
+          <span class="section-n">n = {Object.keys(projetos).length}</span>
+        </div>
         <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
           {Object.entries(projetos).map(([nome, projeto]) => (
             <ProjectCard nome={nome} descricao={projeto.descricao} tags={projeto.tags} url={projeto.url} />

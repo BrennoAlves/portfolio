@@ -4,12 +4,12 @@ import QuincunxFooter from "../components/QuincunxFooter.astro";
 const { pathname } = Astro.url;
 const isProjetos = pathname.includes('/projetos');
 const isPesquisas = pathname.includes('/pesquisas');
-const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vindo';
+const titulo = isProjetos ? 'criando' : isPesquisas ? 'investigando' : 'bem-vindo';
 ---
 
 <div class="container">
   <header class="header" transition:name="site-header">
-    <a href="/" class="logo">{titulo}</a>
+    <a href="/" class="logo"><span class="logo-path">~/</span>{titulo}</a>
     <nav class="nav">
       <ul>
         <li><a href="/">Home</a></li>

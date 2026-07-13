@@ -55,11 +55,11 @@ const skills = [
       <article class="md:flex-row-reverse md:justify-end md:gap-12">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="col-span-2 flex flex-col gap-4 md:gap-6 my-auto">
-            <h1 class="text-3xl hero-title">Prazer, Brenno.</h1>
-            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70 hero-in" style="--d: 350ms">
+            <h1 class="text-3xl font-mono font-semibold tracking-tight hero-title">Prazer, Brenno.</h1>
+            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 opacity-70 hero-in" style="--d: 350ms">
               Trabalho com dados e tecnologia. Fiz meu primeiro curso de programação aos 10 anos. Fui pra Economia por causa da estatística, comecei como estagiário de dados, virei analista e hoje sou sócio na <a class="font-normal text-primary" href="https://www.dataclix.com.br/">DataClix</a>, onde trabalho com dados e gestão de projetos de desenvolvimento. Este site tem alguns desses projetos de estudos. Nas horas vagas, faço pão, tento tocar baixo e cuido da minha gata gorda.
             </p>
-            <div class="nav hero-in" style="--d: 500ms">
+            <div class="nav social hero-in" style="--d: 500ms">
               <ul>
                 <li>
                   <a href="https://www.linkedin.com/in/brennonogueiraalves/" rel="noreferrer" target="_blank" aria-label="LinkedIn do Brenno">
@@ -100,7 +100,7 @@ const skills = [
         <div class="flex flex-col gap-3">
           {skills.map((grupo, i) => (
             <div class="flex flex-wrap items-center gap-x-3 gap-y-2" data-reveal style={`--reveal-i: ${i}`}>
-              <span class="text-xs opacity-50 uppercase tracking-widest w-full sm:w-auto sm:min-w-[10rem]">{grupo.area}</span>
+              <span class="font-mono text-xs opacity-50 uppercase tracking-widest w-full sm:w-auto sm:min-w-[10rem]">{grupo.area}</span>
               <div class="flex flex-wrap gap-2">
                 {grupo.items.map((item) => (
                   <span class="badge badge-ghost badge-sm">{item}</span>
@@ -112,8 +112,10 @@ const skills = [
       </section>
 
       <section class="flex flex-col gap-6">
-        <div class="text-center" data-reveal>
-          <h2 class="text-2xl">Projetos e Pesquisas</h2>
+        <div class="section-head" data-reveal>
+          <h2 class="text-xl font-semibold">Projetos e Pesquisas</h2>
+          <span class="section-rule" aria-hidden="true"></span>
+          <span class="section-n">n = {projetosDestaque.length + pesquisas.length}</span>
         </div>
 
         <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
@@ -141,8 +143,8 @@ const skills = [
         </div>
 
         <div class="flex gap-4 justify-center flex-wrap mt-4" data-reveal>
-          <a href="/projetos" class="btn btn-outline">Outros Projetos</a>
-          <a href="/pesquisas" class="btn btn-outline">Outras Pesquisas</a>
+          <a href="/projetos" class="btn btn-outline">Outros projetos</a>
+          <a href="/pesquisas" class="btn btn-outline">Outras pesquisas</a>
         </div>
       </section>
     </div>

@@ -13,6 +13,9 @@
 @plugin "daisyui/theme" {
   name: "business";
   --border: 1px;
+  /* o business vem com cantos retos por padrão do daisyUI; o resto do site
+     é todo arredondado (botões, cards), então iguala ao nord aqui */
+  --radius-selector: 1rem;
 }
 
 /* foco visível consistente para quem navega por teclado.

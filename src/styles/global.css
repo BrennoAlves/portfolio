@@ -15,6 +15,19 @@
   --border: 1px;
 }
 
+/* foco visível consistente para quem navega por teclado.
+   !important só na cor: o Tailwind/daisyUI já define outline-width e
+   outline-style em várias classes com especificidade maior que a nossa
+   (ex. .btn:focus-visible), então sem isso a cor virava currentColor
+   de novo dependendo do elemento. */
+:focus-visible {
+  outline-width: 2px;
+  outline-style: solid;
+  outline-color: var(--color-primary) !important;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 :root {
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
@@ -229,6 +242,11 @@ html.theme-switching::view-transition-new(root) {
   }
 }
 
+/* mesmo feedback do hover, pra quem navega até o link do card via teclado */
+:root .card:focus-within {
+  transform: translateY(-4px);
+}
+
 @keyframes cardIn {
   from {
     opacity: 0;
@@ -253,7 +271,8 @@ html.theme-switching::view-transition-new(root) {
   .js [data-reveal] {
     transform: none;
   }
-  :root .card:hover {
+  :root .card:hover,
+  :root .card:focus-within {
     transform: none;
   }
   ::view-transition-old(root),

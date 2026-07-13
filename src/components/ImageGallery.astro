@@ -7,7 +7,7 @@
   <slot />
 </div>
 
-<div id="image-gallery-modal" class="image-modal">
+<div id="image-gallery-modal" class="image-modal" role="dialog" aria-modal="true" aria-label="Galeria de imagens">
   <button class="modal-close" aria-label="Fechar galeria">×</button>
   <div class="modal-controls">
     <button class="zoom-in" aria-label="Aumentar zoom">+</button>
@@ -176,7 +176,7 @@
     }
   }
 
-  /* Imagens clicáveis */
+  /* Imagens clicáveis (também focáveis via teclado, ver script) */
   .image-gallery-wrapper img {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -191,6 +191,11 @@
       transform: scale(1.02);
       box-shadow: 0 25px 30px -5px rgb(0 0 0 / 0.2), 0 10px 15px -6px rgb(0 0 0 / 0.15);
     }
+  }
+
+  .image-gallery-wrapper img:focus-visible {
+    transform: scale(1.02);
+    box-shadow: 0 25px 30px -5px rgb(0 0 0 / 0.2), 0 10px 15px -6px rgb(0 0 0 / 0.15);
   }
 </style>
 
@@ -209,6 +214,7 @@
     private initialScale: number = 1;
     private lastTouchX: number = 0;
     private lastTouchY: number = 0;
+    private lastFocused: HTMLElement | null = null;
 
     constructor() {
       this.init();
@@ -228,9 +234,26 @@
     setupImageListeners() {
       const images = document.querySelectorAll('.image-gallery-wrapper img');
       images.forEach(img => {
+        // torna a imagem focável e ativável por teclado (Enter/Espaço),
+        // já que o clique sozinho não é alcançável sem mouse
+        if (!img.hasAttribute('tabindex')) img.setAttribute('tabindex', '0');
+        img.setAttribute('role', 'button');
+        if (!img.hasAttribute('aria-label')) {
+          const alt = img.getAttribute('alt');
+          img.setAttribute('aria-label', alt ? `Ampliar imagem: ${alt}` : 'Ampliar imagem');
+        }
+
         img.addEventListener('click', (e) => {
           e.preventDefault();
           this.openModal(e.target as HTMLImageElement);
+        });
+
+        img.addEventListener('keydown', (e) => {
+          const key = (e as KeyboardEvent).key;
+          if (key === 'Enter' || key === ' ') {
+            e.preventDefault();
+            this.openModal(img as HTMLImageElement);
+          }
         });
       });
     }
@@ -252,10 +275,13 @@
         this.closeModal();
       });
 
-      // Fechar com ESC
+      // Fechar com ESC, e prender o Tab dentro do modal enquanto aberto
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && this.modal?.classList.contains('active')) {
+        if (!this.modal?.classList.contains('active')) return;
+        if (e.key === 'Escape') {
           this.closeModal();
+        } else if (e.key === 'Tab') {
+          this.trapTab(e);
         }
       });
 
@@ -292,9 +318,31 @@
       });
     }
 
+    getFocusableElements(): HTMLElement[] {
+      if (!this.modal) return [];
+      return Array.from(
+        this.modal.querySelectorAll<HTMLElement>('button')
+      );
+    }
+
+    trapTab(e: KeyboardEvent) {
+      const focusable = this.getFocusableElements();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
     openModal(img: HTMLImageElement) {
       if (!this.modal || !this.modalImg) return;
 
+      this.lastFocused = document.activeElement as HTMLElement;
       this.modalImg.src = img.src;
       this.modalImg.alt = img.alt;
       this.modal.classList.add('active');
@@ -305,6 +353,8 @@
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
       document.body.style.height = '100%';
+
+      this.modal.querySelector<HTMLElement>('.modal-close')?.focus();
     }
 
     closeModal() {
@@ -318,6 +368,9 @@
       document.body.style.position = '';
       document.body.style.width = '';
       document.body.style.height = '';
+
+      this.lastFocused?.focus();
+      this.lastFocused = null;
     }
 
     updateTransform() {

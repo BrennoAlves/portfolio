@@ -4,24 +4,27 @@ import ProjectCard from "../components/ProjectCard.astro";
 import ResearchCard from "../components/ResearchCard.astro";
 import { projetosDestaque } from "../consts";
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
+import { Image, getImage } from "astro:assets";
 import perfilFoto from "../assets/perfil.webp";
 
 const pesquisas = await getCollection("pesquisas");
 
 const homeDescription = "Sócio na DataClix. De estagiário de dados a analista a sócio. Projetos e pesquisas em dados, automação e gestão de desenvolvimento.";
 
+const perfilOtimizado = await getImage({ src: perfilFoto, width: perfilFoto.width, height: perfilFoto.height });
+
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Brenno Alves",
   "jobTitle": "CEO",
+  "image": new URL(perfilOtimizado.src, Astro.site).toString(),
   "worksFor": {
     "@type": "Organization",
     "name": "DataClix",
     "url": "https://www.dataclix.com.br/"
   },
-  "url": "https://brennoalves.com.br",
+  "url": "https://brennoalves.com",
   "sameAs": [
     "https://www.linkedin.com/in/brennonogueiraalves/",
     "https://github.com/BrennoAlves"

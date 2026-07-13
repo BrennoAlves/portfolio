@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://brennoalves.com.br/sitemap-index.xml
+Sitemap: https://brennoalves.com/sitemap-index.xml

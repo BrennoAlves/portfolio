@@ -5,6 +5,8 @@ import ArticleHeader from "../../components/ArticleHeader.astro";
 import MethodologySection from "../../components/MethodologySection.astro";
 import { TITULO_SITE } from "../../consts";
 import { getEntry, render } from 'astro:content';
+import { getImage } from 'astro:assets';
+import perfilFoto from "../../assets/perfil.webp";
 import '../../styles/prose.css';
 
 const entry = await getEntry('pesquisas', 'enem-renda-mg');
@@ -14,23 +16,39 @@ if (!entry) {
 const { Content } = await render(entry);
 const { titulo, subtitulo, tags, data } = entry.data;
 
+const capaOtimizada = await getImage({ src: entry.data.imagemCapa, width: entry.data.imagemCapa.width });
+const perfilOtimizado = await getImage({ src: perfilFoto, width: perfilFoto.width, height: perfilFoto.height });
+const dataPublicacao = `${data}-01-01`;
+const urlArtigo = new URL(`/pesquisas/${entry.id}/`, Astro.site).toString();
+
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": titulo,
   "description": entry.data.descricao,
-  "datePublished": data,
+  "image": new URL(capaOtimizada.src, Astro.site).toString(),
+  "datePublished": dataPublicacao,
+  "dateModified": dataPublicacao,
+  "inLanguage": "pt-BR",
   "author": {
     "@type": "Person",
     "name": "Brenno Alves",
-    "url": "https://brennoalves.com.br"
+    "url": "https://brennoalves.com"
   },
   "publisher": {
     "@type": "Person",
     "name": "Brenno Alves",
-    "url": "https://brennoalves.com.br"
+    "url": "https://brennoalves.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": new URL(perfilOtimizado.src, Astro.site).toString()
+    }
   },
-  "url": "https://brennoalves.com.br/pesquisas/enem-renda-mg/"
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": urlArtigo
+  },
+  "url": urlArtigo
 };
 
 const metodologia = [

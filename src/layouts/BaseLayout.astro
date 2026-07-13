@@ -1,11 +1,12 @@
 ---
+import QuincunxFooter from "../components/QuincunxFooter.astro";
+
 const { pathname } = Astro.url;
 const isProjetos = pathname.includes('/projetos');
 const isPesquisas = pathname.includes('/pesquisas');
 const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vindo';
 ---
 
-<canvas id="data-field" transition:persist="data-field" aria-hidden="true"></canvas>
 <div class="container">
   <header class="header" transition:name="site-header">
     <a href="/" class="logo">{titulo}</a>
@@ -22,6 +23,7 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
   </header>
   <slot />
 </div>
+<QuincunxFooter />
 
 <style is:global>
   :root {
@@ -136,14 +138,6 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
     content: "/";
     margin: 0 0.5rem 0 0.75rem;
     opacity: 0.4;
-  }
-
-  /* campo de dados vivo — atrás de tudo */
-  #data-field {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
   }
 
   #theme-toggle {
@@ -287,175 +281,6 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
 <script>
   import { bind } from 'cuelume';
 
-  // ── quincunx: o Teorema Central do Limite, ao vivo ─────────────────────
-  // Pontos nascem no centro do topo, fazem passeio aleatório numa malha de
-  // pinos quase invisível e empilham uma normal no rodapé. O cursor desvia
-  // pontos na queda: viés de seleção interativo.
-  function startQuincunx() {
-    const canvas = document.getElementById('data-field');
-    if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.on) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    canvas.dataset.on = '1';
-    const cv = canvas; // narrowing não sobrevive a closures
-    const ctx = cv.getContext('2d');
-    if (!ctx) return;
-    const g = ctx;
-
-    const mobile = window.matchMedia('(pointer: coarse)').matches;
-    const MAX_BALLS = mobile ? 30 : 70;
-    const SPAWN_MS = mobile ? 900 : 450;
-    const balls: { x: number; y: number; vx: number; vy: number }[] = [];
-    const mouse = { x: -99999, y: -99999 };
-    let w = 0, h = 0, dpr = 1;
-    let cols = 0, colW = 0;
-    let counts: number[] = [];
-    let pegRows: number[] = [];
-    let pegGapX = 0;
-    let lastSpawn = 0;
-
-    function resize() {
-      // viewport 0 acontece em prerender/background — não zerar o canvas
-      if (!window.innerWidth || !window.innerHeight) return;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = cv.width = window.innerWidth * dpr;
-      h = cv.height = window.innerHeight * dpr;
-      cv.style.width = window.innerWidth + 'px';
-      cv.style.height = window.innerHeight + 'px';
-      cols = Math.max(12, Math.round(window.innerWidth / 56));
-      colW = w / cols;
-      // a máquina já estava rodando antes de você abrir: sino parcial pré-semeado
-      const teto = h * 0.16;
-      const sigma = cols / 7;
-      counts = Array.from({ length: cols }, (_, c) => {
-        const z = (c - (cols - 1) / 2) / sigma;
-        return teto * 0.5 * Math.exp(-0.5 * z * z) * (0.8 + Math.random() * 0.4);
-      });
-      // malha de pinos: da faixa 18% a 62% da altura
-      pegRows = [];
-      const nRows = 8;
-      for (let r = 0; r < nRows; r++) pegRows.push(h * (0.18 + (r * 0.44) / (nRows - 1)));
-      pegGapX = w / 24;
-    }
-
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
-
-    // dono do hero, fantasma no resto: desvanece conforme o scroll
-    function fadePorScroll() {
-      const p = Math.min(1, window.scrollY / (window.innerHeight * 0.8));
-      cv.style.opacity = String(1 - p * 0.88); // nunca abaixo de 0.12
-    }
-    fadePorScroll();
-    window.addEventListener('scroll', fadePorScroll, { passive: true });
-    document.addEventListener('astro:page-load', fadePorScroll);
-
-    if (!mobile) {
-      window.addEventListener('pointermove', (e) => {
-        mouse.x = e.clientX * dpr;
-        mouse.y = e.clientY * dpr;
-      }, { passive: true });
-    }
-
-    let running = true;
-    document.addEventListener('visibilitychange', () => {
-      const estava = running;
-      running = !document.hidden;
-      if (running && !estava) tick(performance.now());
-    });
-
-    function tick(agora: number) {
-      if (!running) return;
-      if (!w || !h) {
-        resize();
-        requestAnimationFrame(tick);
-        return;
-      }
-      g.clearRect(0, 0, w, h);
-      const dark = document.documentElement.getAttribute('data-theme') === 'business';
-      const rgb = dark ? '129, 161, 193' : '94, 129, 172';
-
-      // nasce no centro do topo — o passeio aleatório constrói o sino
-      if (agora - lastSpawn > SPAWN_MS && balls.length < MAX_BALLS) {
-        lastSpawn = agora;
-        balls.push({
-          x: w / 2 + (Math.random() - 0.5) * w * 0.04,
-          y: -4 * dpr,
-          vx: 0,
-          vy: (0.6 + Math.random() * 0.4) * dpr,
-        });
-      }
-
-      // pinos: presença sutil, quase subliminar
-      g.fillStyle = `rgba(${rgb}, ${dark ? 0.10 : 0.08})`;
-      for (const py of pegRows) {
-        const desloca = (pegRows.indexOf(py) % 2) * pegGapX * 0.5;
-        for (let px = desloca; px <= w; px += pegGapX) {
-          g.beginPath();
-          g.arc(px, py, 0.9 * dpr, 0, 6.2832);
-          g.fill();
-        }
-      }
-
-      const chao = h - 6 * dpr;
-      const gravidade = 0.045 * dpr;
-      const vyMax = 2.6 * dpr;
-
-      for (let i = balls.length - 1; i >= 0; i--) {
-        const b = balls[i];
-        const yAntes = b.y;
-        b.vy = Math.min(vyMax, b.vy + gravidade);
-        // cursor desvia a queda (viés de seleção)
-        const dx = b.x - mouse.x;
-        const dy = b.y - mouse.y;
-        const dm = Math.hypot(dx, dy);
-        if (dm < 120 * dpr && dm > 0.01) {
-          b.vx += (dx / dm) * 0.22 * dpr;
-        }
-        // cruzou uma fileira de pinos → nudge binomial
-        for (const py of pegRows) {
-          if (yAntes < py && b.y >= py) {
-            b.vx += (Math.random() < 0.5 ? -1 : 1) * (0.55 + Math.random() * 0.25) * dpr;
-          }
-        }
-        b.vx *= 0.96;
-        b.x += b.vx;
-        b.y += b.vy;
-        if (b.x < 2 * dpr) { b.x = 2 * dpr; b.vx = Math.abs(b.vx); }
-        if (b.x > w - 2 * dpr) { b.x = w - 2 * dpr; b.vx = -Math.abs(b.vx); }
-
-        const alturaBarra = (counts[Math.floor(b.x / colW)] || 0);
-        if (b.y >= chao - alturaBarra) {
-          // aterrissou: vira histograma
-          const bin = Math.max(0, Math.min(cols - 1, Math.floor(b.x / colW)));
-          counts[bin] += 7 * dpr;
-          balls.splice(i, 1);
-          continue;
-        }
-        g.fillStyle = `rgba(${rgb}, ${dark ? 0.65 : 0.55})`;
-        g.beginPath();
-        g.arc(b.x, b.y, 1.7 * dpr, 0, 6.2832);
-        g.fill();
-      }
-
-      // histograma vivo: sobe com as aterrissagens, respira com decay lento
-      const alturaTeto = h * 0.16;
-      for (let c = 0; c < cols; c++) {
-        counts[c] = Math.min(alturaTeto, counts[c]) * 0.9996;
-        const alt = counts[c];
-        if (alt < 1) continue;
-        // barra desvanece rumo ao topo — sem borda dura, sem "coluna de sombra"
-        const grad = g.createLinearGradient(0, chao - alt, 0, chao);
-        grad.addColorStop(0, `rgba(${rgb}, 0)`);
-        grad.addColorStop(1, `rgba(${rgb}, ${dark ? 0.14 : 0.09})`);
-        g.fillStyle = grad;
-        g.fillRect(c * colW + 1 * dpr, chao - alt, colW - 2 * dpr, alt);
-      }
-
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
-  startQuincunx();
 
   // easter egg pra quem abre o console (dev reconhece dev)
   if (!(window as any).__egg) {
@@ -465,9 +290,9 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
       '   /\\_/\\     A gata gorda supervisionou\n' +
       '  ( -.- )    cada linha deste site.\n' +
       '   =( I )=\n\n' +
-      'A chuva de pontos aí atrás é um quincunx: passeio aleatório\n' +
-      'formando uma normal — TCL ao vivo. Mexa o mouse na queda\n' +
-      'e você vira viés de seleção.\n\n' +
+      'Lá no rodapé tem um quincunx: passeio aleatório formando\n' +
+      'uma normal — TCL ao vivo. Clique na chuva pra despejar\n' +
+      'pontos; o cursor entorta a amostra.\n\n' +
       '🍞 pão de fermentação natural  🎸 baixo  📊 dados\n' +
       '→ brenno1231@outlook.com | github.com/BrennoAlves',
       'font-size: 18px; font-weight: 700; color: #5E81AC;',
@@ -546,6 +371,5 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
   document.addEventListener('astro:page-load', () => {
     setupReveal();
     decorateSounds();
-    startQuincunx(); // persist mantém o canvas; isto cobre reload completo
   });
 </script>

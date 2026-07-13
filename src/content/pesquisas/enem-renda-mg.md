@@ -81,3 +81,5 @@ O ENEM nasceu como forma de democratizar o acesso às universidades federais. A 
 O problema é que "igual para todos" só funciona se todos largam do mesmo lugar. Quando a renda familiar determina quanto você consegue se preparar, o resultado "meritocrático" acaba reproduzindo desigualdade.
 
 Iniciativas como cotas e cursinhos populares tentam compensar essa diferença. Mas os dados mostram que ainda há um longo caminho. A vantagem de quem tem mais recursos permanece significativa em todas as disciplinas.
+
+Se você curte esse tipo de mergulho em dados públicos, tem outra pesquisa minha sobre [a distribuição do Minha Casa, Minha Vida pelo Brasil](/pesquisas/distribuicao-mcmv).

@@ -3,7 +3,6 @@ import Layout from "../../layouts/Layout.astro";
 import ImageGallery from "../../components/ImageGallery.astro";
 import ArticleHeader from "../../components/ArticleHeader.astro";
 import MethodologySection from "../../components/MethodologySection.astro";
-import { TITULO_SITE } from "../../consts";
 import { getEntry, render } from 'astro:content';
 import { getImage } from 'astro:assets';
 import perfilFoto from "../../assets/perfil.webp";
@@ -71,7 +70,7 @@ const metodologia = [
 ];
 ---
 
-<Layout title={`${titulo} | ${TITULO_SITE}`} description={entry.data.descricao} jsonLd={articleSchema}>
+<Layout title={titulo} description={entry.data.descricao} jsonLd={articleSchema}>
   <article class="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-12 animate-fade-in">
     <ArticleHeader title={titulo} subtitle={subtitulo} tags={tags} date={data} transitionName={`pesquisa-titulo-${entry.id}`} />
 

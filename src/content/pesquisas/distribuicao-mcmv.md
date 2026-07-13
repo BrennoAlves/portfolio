@@ -4,7 +4,7 @@ subtitulo: "Análise geoespacial e econométrica da alocação de 3,5 milhões d
 data: "2024"
 tags: ["Política Pública", "Data Science", "Python"]
 imagemCapa: "./mcmv-assets/image3.webp"
-descricao: "Análise da distribuição de 3,5 milhões de unidades do programa Minha Casa, Minha Vida, revelando como o mercado imobiliário influenciou a alocação de recursos públicos."
+descricao: "Análise geoespacial de 3,5 milhões de unidades do Minha Casa, Minha Vida no Sudeste e o papel do mercado imobiliário na alocação."
 ---
 
 ## Contexto e Motivação
@@ -66,4 +66,6 @@ A análise mostra que programas habitacionais em larga escala funcionam melhor o
 Municípios com restrições urbanísticas fortes ou mercado incipiente acabam ficando para trás. Os dados do Rio de Janeiro ilustram bem isso. A solução passa por desenhos de política que reconheçam essas diferenças regionais.
 
 Talvez incentivos adicionais para regiões de difícil operação, ou modelos alternativos de produção habitacional. O desafio é equalizar sem inviabilizar economicamente os empreendimentos. Ninguém ganha se os projetos não saem do papel.
+
+Tem mais uma pesquisa minha com dados públicos, sobre [como a renda familiar afeta o desempenho no ENEM](/pesquisas/enem-renda-mg), se você quiser continuar por aqui.
 

@@ -287,9 +287,11 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
 <script>
   import { bind } from 'cuelume';
 
-  // ── campo de dados vivo ────────────────────────────────────────────────
-  // ponytail: O(n²) nas linhas (n≤70 → ~2.4k pares/frame); quadtree se crescer
-  function startDataField() {
+  // ── quincunx: o Teorema Central do Limite, ao vivo ─────────────────────
+  // Pontos nascem no centro do topo, fazem passeio aleatório numa malha de
+  // pinos quase invisível e empilham uma normal no rodapé. O cursor desvia
+  // pontos na queda: viés de seleção interativo.
+  function startQuincunx() {
     const canvas = document.getElementById('data-field');
     if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.on) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -300,10 +302,16 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
     const g = ctx;
 
     const mobile = window.matchMedia('(pointer: coarse)').matches;
-    const N = mobile ? 35 : 70;
-    const pts: { x: number; y: number; vx: number; vy: number }[] = [];
+    const MAX_BALLS = mobile ? 30 : 70;
+    const SPAWN_MS = mobile ? 900 : 450;
+    const balls: { x: number; y: number; vx: number; vy: number }[] = [];
     const mouse = { x: -99999, y: -99999 };
     let w = 0, h = 0, dpr = 1;
+    let cols = 0, colW = 0;
+    let counts: number[] = [];
+    let pegRows: number[] = [];
+    let pegGapX = 0;
+    let lastSpawn = 0;
 
     function resize() {
       // viewport 0 acontece em prerender/background — não zerar o canvas
@@ -313,19 +321,20 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
       h = cv.height = window.innerHeight * dpr;
       cv.style.width = window.innerWidth + 'px';
       cv.style.height = window.innerHeight + 'px';
-      seed();
-    }
-
-    function seed() {
-      if (pts.length || !w || !h) return;
-      for (let i = 0; i < N; i++) {
-        pts.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.15 * dpr,
-          vy: (Math.random() - 0.5) * 0.15 * dpr,
-        });
-      }
+      cols = Math.max(12, Math.round(window.innerWidth / 56));
+      colW = w / cols;
+      // a máquina já estava rodando antes de você abrir: sino parcial pré-semeado
+      const teto = h * 0.24;
+      const sigma = cols / 7;
+      counts = Array.from({ length: cols }, (_, c) => {
+        const z = (c - (cols - 1) / 2) / sigma;
+        return teto * 0.5 * Math.exp(-0.5 * z * z) * (0.8 + Math.random() * 0.4);
+      });
+      // malha de pinos: da faixa 18% a 62% da altura
+      pegRows = [];
+      const nRows = 8;
+      for (let r = 0; r < nRows; r++) pegRows.push(h * (0.18 + (r * 0.44) / (nRows - 1)));
+      pegGapX = w / 24;
     }
 
     resize();
@@ -342,10 +351,10 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
     document.addEventListener('visibilitychange', () => {
       const estava = running;
       running = !document.hidden;
-      if (running && !estava) tick();
+      if (running && !estava) tick(performance.now());
     });
 
-    function tick() {
+    function tick(agora: number) {
       if (!running) return;
       if (!w || !h) {
         resize();
@@ -354,53 +363,106 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
       }
       g.clearRect(0, 0, w, h);
       const dark = document.documentElement.getAttribute('data-theme') === 'business';
-      const dot = dark ? 'rgba(129, 161, 193, 0.55)' : 'rgba(94, 129, 172, 0.5)';
       const rgb = dark ? '129, 161, 193' : '94, 129, 172';
-      const LINK = 130 * dpr;
-      const REPEL = 140 * dpr;
 
-      for (const p of pts) {
-        const dxm = p.x - mouse.x;
-        const dym = p.y - mouse.y;
-        const dm = Math.hypot(dxm, dym);
-        if (dm < REPEL && dm > 0.01) {
-          p.vx += (dxm / dm) * 0.03 * dpr;
-          p.vy += (dym / dm) * 0.03 * dpr;
+      // nasce no centro do topo — o passeio aleatório constrói o sino
+      if (agora - lastSpawn > SPAWN_MS && balls.length < MAX_BALLS) {
+        lastSpawn = agora;
+        balls.push({
+          x: w / 2 + (Math.random() - 0.5) * w * 0.04,
+          y: -4 * dpr,
+          vx: 0,
+          vy: (0.6 + Math.random() * 0.4) * dpr,
+        });
+      }
+
+      // pinos: presença sutil, quase subliminar
+      g.fillStyle = `rgba(${rgb}, ${dark ? 0.10 : 0.08})`;
+      for (const py of pegRows) {
+        const desloca = (pegRows.indexOf(py) % 2) * pegGapX * 0.5;
+        for (let px = desloca; px <= w; px += pegGapX) {
+          g.beginPath();
+          g.arc(px, py, 0.9 * dpr, 0, 6.2832);
+          g.fill();
         }
-        p.vx = p.vx * 0.985 + (Math.random() - 0.5) * 0.004 * dpr;
-        p.vy = p.vy * 0.985 + (Math.random() - 0.5) * 0.004 * dpr;
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
-        p.x = Math.max(0, Math.min(w, p.x));
-        p.y = Math.max(0, Math.min(h, p.y));
-        g.fillStyle = dot;
+      }
+
+      const chao = h - 6 * dpr;
+      const gravidade = 0.045 * dpr;
+      const vyMax = 2.6 * dpr;
+
+      for (let i = balls.length - 1; i >= 0; i--) {
+        const b = balls[i];
+        const yAntes = b.y;
+        b.vy = Math.min(vyMax, b.vy + gravidade);
+        // cursor desvia a queda (viés de seleção)
+        const dx = b.x - mouse.x;
+        const dy = b.y - mouse.y;
+        const dm = Math.hypot(dx, dy);
+        if (dm < 120 * dpr && dm > 0.01) {
+          b.vx += (dx / dm) * 0.22 * dpr;
+        }
+        // cruzou uma fileira de pinos → nudge binomial
+        for (const py of pegRows) {
+          if (yAntes < py && b.y >= py) {
+            b.vx += (Math.random() < 0.5 ? -1 : 1) * (0.55 + Math.random() * 0.25) * dpr;
+          }
+        }
+        b.vx *= 0.96;
+        b.x += b.vx;
+        b.y += b.vy;
+        if (b.x < 2 * dpr) { b.x = 2 * dpr; b.vx = Math.abs(b.vx); }
+        if (b.x > w - 2 * dpr) { b.x = w - 2 * dpr; b.vx = -Math.abs(b.vx); }
+
+        const alturaBarra = (counts[Math.floor(b.x / colW)] || 0);
+        if (b.y >= chao - alturaBarra) {
+          // aterrissou: vira histograma
+          const bin = Math.max(0, Math.min(cols - 1, Math.floor(b.x / colW)));
+          counts[bin] += 7 * dpr;
+          balls.splice(i, 1);
+          continue;
+        }
+        g.fillStyle = `rgba(${rgb}, ${dark ? 0.65 : 0.55})`;
         g.beginPath();
-        g.arc(p.x, p.y, 1.2 * dpr, 0, 6.2832);
+        g.arc(b.x, b.y, 1.7 * dpr, 0, 6.2832);
         g.fill();
       }
 
-      for (let i = 0; i < N; i++) {
-        for (let j = i + 1; j < N; j++) {
-          const a = pts[i], b = pts[j];
-          const dx = a.x - b.x, dy = a.y - b.y;
-          const d = Math.hypot(dx, dy);
-          if (d < LINK) {
-            g.strokeStyle = `rgba(${rgb}, ${(1 - d / LINK) * 0.18})`;
-            g.lineWidth = 0.7 * dpr;
-            g.beginPath();
-            g.moveTo(a.x, a.y);
-            g.lineTo(b.x, b.y);
-            g.stroke();
-          }
-        }
+      // histograma vivo: sobe com as aterrissagens, respira com decay lento
+      const alturaTeto = h * 0.24;
+      for (let c = 0; c < cols; c++) {
+        counts[c] = Math.min(alturaTeto, counts[c]) * 0.9996;
+        const alt = counts[c];
+        if (alt < 1) continue;
+        g.fillStyle = `rgba(${rgb}, ${dark ? 0.16 : 0.12})`;
+        g.fillRect(c * colW + 1 * dpr, chao - alt, colW - 2 * dpr, alt);
+        g.fillStyle = `rgba(${rgb}, ${dark ? 0.5 : 0.4})`;
+        g.fillRect(c * colW + 1 * dpr, chao - alt, colW - 2 * dpr, 1.2 * dpr);
       }
+
       requestAnimationFrame(tick);
     }
-    tick();
+    requestAnimationFrame(tick);
   }
-  startDataField();
+  startQuincunx();
+
+  // easter egg pra quem abre o console (dev reconhece dev)
+  if (!(window as any).__egg) {
+    (window as any).__egg = 1;
+    console.log(
+      '%cPrazer, Brenno.%c\n\n' +
+      '   /\\_/\\     A gata gorda supervisionou\n' +
+      '  ( -.- )    cada linha deste site.\n' +
+      '   =( I )=\n\n' +
+      'A chuva de pontos aí atrás é um quincunx: passeio aleatório\n' +
+      'formando uma normal — TCL ao vivo. Mexa o mouse na queda\n' +
+      'e você vira viés de seleção.\n\n' +
+      '🍞 pão de fermentação natural  🎸 baixo  📊 dados\n' +
+      '→ brenno1231@outlook.com | github.com/BrennoAlves',
+      'font-size: 18px; font-weight: 700; color: #5E81AC;',
+      'font-size: 12px; color: inherit;'
+    );
+  }
 
   // ── spotlight nos cards (uma var CSS por card, paint-only) ─────────────
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -473,6 +535,6 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
   document.addEventListener('astro:page-load', () => {
     setupReveal();
     decorateSounds();
-    startDataField(); // persist mantém o canvas; isto cobre reload completo
+    startQuincunx(); // persist mantém o canvas; isto cobre reload completo
   });
 </script>

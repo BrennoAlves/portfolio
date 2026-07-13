@@ -7,16 +7,22 @@ export interface Props {
   tags: string[];
   date: string;
   transitionName?: string;
+  repoUrl?: string;
 }
 
-const { title, subtitle, tags, date, transitionName } = Astro.props;
+const { title, subtitle, tags, date, transitionName, repoUrl } = Astro.props;
 ---
 
 <div class="reading-progress" aria-hidden="true"></div>
 
 <header class="mb-8 md:mb-16 border-b border-base-300 pb-6 md:pb-10">
-  <div class="mb-4 md:mb-8">
+  <div class="mb-4 md:mb-8 flex flex-wrap items-center justify-between gap-4">
     <TagBadges tags={tags} includeDate={date} size="lg" />
+    {repoUrl && (
+      <a href={repoUrl} target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+        Ver no GitHub
+      </a>
+    )}
   </div>
   <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-base-content leading-tight md:leading-[1.1] mb-4 md:mb-8 tracking-tight" transition:name={transitionName}>
     {title}

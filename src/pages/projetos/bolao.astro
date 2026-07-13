@@ -1,0 +1,76 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ImageGallery from "../../components/ImageGallery.astro";
+import ArticleHeader from "../../components/ArticleHeader.astro";
+import MethodologySection from "../../components/MethodologySection.astro";
+import { getEntry, render } from 'astro:content';
+import '../../styles/prose.css';
+
+const entry = await getEntry('projetos', 'bolao');
+if (!entry) {
+  throw new Error('Projeto não encontrado');
+}
+const { Content } = await render(entry);
+const { titulo, subtitulo, tags, data, repo } = entry.data;
+
+const dataPublicacao = `${data}-01-01`;
+const urlArtigo = new URL(`/projetos/${entry.id}/`, Astro.site).toString();
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": titulo,
+  "description": entry.data.descricao,
+  "datePublished": dataPublicacao,
+  "dateModified": dataPublicacao,
+  "inLanguage": "pt-BR",
+  "author": {
+    "@type": "Person",
+    "name": "Brenno Alves",
+    "url": "https://www.brennoalves.com"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Brenno Alves",
+    "url": "https://www.brennoalves.com"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": urlArtigo
+  },
+  "url": urlArtigo
+};
+
+const stack = [
+  {
+    title: 'Modelo e simulação',
+    list: [
+      'scipy e numpy para o ajuste de Poisson/Dixon-Coles e o solver da margem de mercado',
+      'Elo próprio calculado em ordem cronológica, sem vazamento de dados, comparado ao mercado via RPS e bootstrap pareado',
+      'Simulação de Monte Carlo sobre os jogos restantes para escolher a estratégia que maximiza a chance de título, não só o valor esperado'
+    ]
+  },
+  {
+    title: 'Daemon e automação',
+    list: [
+      'APScheduler apostando em T-60 e refinando o palpite conforme novas odds chegam',
+      'Playwright para registrar e conferir o palpite no site do bolão, com classificação de falhas para decidir entre nova tentativa e alerta manual',
+      'Notificações do ciclo de vida da aposta via cc, meu outro daemon'
+    ]
+  }
+];
+---
+
+<Layout title={titulo} description={entry.data.descricao} jsonLd={articleSchema}>
+  <article class="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-12 animate-fade-in">
+    <ArticleHeader title={titulo} subtitle={subtitulo} tags={tags} date={data} repoUrl={repo} transitionName={`projeto-titulo-${entry.id}`} />
+
+    <ImageGallery>
+      <div class="prose-custom max-w-none">
+        <Content />
+      </div>
+    </ImageGallery>
+
+    <MethodologySection title="Stack e Como Rodar" items={stack} />
+  </article>
+</Layout>

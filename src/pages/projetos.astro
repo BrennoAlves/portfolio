@@ -2,7 +2,11 @@
 import ProjetosLayout from "../layouts/Projetos.astro";
 import PageIntro from "../components/PageIntro.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import ResearchCard from "../components/ResearchCard.astro";
 import { projetos } from "../consts";
+import { getCollection } from 'astro:content';
+
+const projetosComArtigo = await getCollection('projetos');
 ---
 
 <ProjetosLayout description="Projetos de automação, NLP, OCR e análise de dados desenvolvidos por Brenno Alves.">
@@ -13,10 +17,31 @@ import { projetos } from "../consts";
         description="Aqui estão projetos que desenvolvi para testar conceitos, ferramentas e experimentar soluções."
       />
 
-      <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
-        {Object.entries(projetos).map(([nome, projeto]) => (
-          <ProjectCard nome={nome} descricao={projeto.descricao} tags={projeto.tags} url={projeto.url} />
-        ))}
+      {projetosComArtigo.length > 0 && (
+        <div class="flex flex-col gap-6">
+          <h2 class="text-xl font-semibold">Com artigo completo</h2>
+          <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+            {projetosComArtigo.map((projeto) => (
+              <ResearchCard
+                titulo={projeto.data.titulo}
+                descricao={projeto.data.descricao}
+                tags={projeto.data.tags}
+                url={`/projetos/${projeto.id}`}
+                includeDate={projeto.data.data}
+                ctaLabel="Ler Artigo"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div class="flex flex-col gap-6">
+        <h2 class="text-xl font-semibold">Outros projetos</h2>
+        <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+          {Object.entries(projetos).map(([nome, projeto]) => (
+            <ProjectCard nome={nome} descricao={projeto.descricao} tags={projeto.tags} url={projeto.url} />
+          ))}
+        </div>
       </div>
     </div>
   </main>

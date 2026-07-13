@@ -216,6 +216,24 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
 </style>
 
 <script>
+  import { bind } from 'cuelume';
+
+  // sons sutis de interação: nav (tick), botões (press/release), galeria (bloom)
+  function decorateSounds() {
+    document.querySelectorAll('.nav a').forEach((el) => {
+      el.setAttribute('data-cuelume-hover', 'tick');
+    });
+    document.querySelectorAll('.btn').forEach((el) => {
+      el.setAttribute('data-cuelume-press', 'press');
+      el.setAttribute('data-cuelume-release', 'release');
+    });
+    document.querySelectorAll('.image-gallery-wrapper img').forEach((el) => {
+      el.setAttribute('data-cuelume-press', 'bloom');
+    });
+  }
+
+  bind();
+
   function setupReveal() {
     const els = document.querySelectorAll('[data-reveal], .card-animate');
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -236,5 +254,8 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
     els.forEach((el) => io.observe(el));
   }
 
-  document.addEventListener('astro:page-load', setupReveal);
+  document.addEventListener('astro:page-load', () => {
+    setupReveal();
+    decorateSounds();
+  });
 </script>

@@ -290,11 +290,10 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
       '   /\\_/\\     A gata gorda revisou\n' +
       '  ( -.- )    cada linha desse site.\n' +
       '   =( I )=\n\n' +
-      'Aquele negócio no rodapé é um quincunx. Cada ponto cai\n' +
+      'Aquele trem no rodapé é um quincunx. Cada ponto cai\n' +
       'sorteado e mesmo assim eles formam uma curva normal.\n' +
       'Clique na chuva para soltar mais pontos. Mexa o mouse\n' +
       'para entortar a amostra.\n\n' +
-      'Pão, baixo e dados. Não necessariamente nessa ordem.\n\n' +
       'brenno1231@outlook.com   github.com/BrennoAlves',
       'font-size: 18px; font-weight: 700; color: #5E81AC;',
       'font-size: 12px; color: inherit;'
@@ -335,10 +334,10 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
 
   // sons sutis de interação: nav (tick), botões (press/release), galeria (bloom)
   function decorateSounds() {
-    document.querySelectorAll('.nav a').forEach((el) => {
+    document.querySelectorAll('.nav a, .qf-links a').forEach((el) => {
       el.setAttribute('data-cuelume-hover', 'tick');
     });
-    document.querySelectorAll('.btn').forEach((el) => {
+    document.querySelectorAll('.btn, .btn-game').forEach((el) => {
       el.setAttribute('data-cuelume-press', 'press');
       el.setAttribute('data-cuelume-release', 'release');
     });

@@ -16,6 +16,7 @@
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.13.4",
+    "cuelume": "^0.1.0",
     "tailwindcss": "^3.4.18",
     "typescript": "^5.6.3"
   },

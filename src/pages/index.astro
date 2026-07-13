@@ -4,6 +4,8 @@ import ProjectCard from "../components/ProjectCard.astro";
 import ResearchCard from "../components/ResearchCard.astro";
 import { projetosDestaque } from "../consts";
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import perfilFoto from "../assets/perfil.webp";
 
 const pesquisas = await getCollection("pesquisas");
 
@@ -84,7 +86,7 @@ const skills = [
           <div class="mx-auto mt-6 sm:mt-0 hero-photo" style="--d: 250ms">
             <div class="avatar flex-items-center mx-auto sm:flex-row">
               <div class="w-60 rounded">
-                <img src="/perfil.webp" alt="Foto do Brenno" loading="lazy" decoding="async" />
+                <Image src={perfilFoto} alt="Foto do Brenno" loading="eager" fetchpriority="high" decoding="async" width={240} height={320} />
               </div>
             </div>
           </div>

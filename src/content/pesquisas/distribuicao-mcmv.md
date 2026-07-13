@@ -3,7 +3,7 @@ titulo: "Distribuição Espacial do Programa Minha Casa, Minha Vida no Sudeste"
 subtitulo: "Análise geoespacial e econométrica da alocação de 3,5 milhões de unidades habitacionais na região mais populosa do Brasil."
 data: "2024"
 tags: ["Política Pública", "Data Science", "Python"]
-imagemCapa: "/pesquisas/mcmv-assets/image3.webp"
+imagemCapa: "./mcmv-assets/image3.webp"
 descricao: "Análise da distribuição de 3,5 milhões de unidades do programa Minha Casa, Minha Vida, revelando como o mercado imobiliário influenciou a alocação de recursos públicos."
 ---
 
@@ -39,7 +39,7 @@ Os motivos são conhecidos: custo elevado da terra, questões fundiárias comple
 
 O mapa abaixo mostra onde as unidades foram contratadas. Quanto mais escura a região, maior a concentração. Dá pra ver claramente o eixo São Paulo-Minas se destacando.
 
-![Distribuição espacial das unidades habitacionais do MCMV no Sudeste (2009-2020). Quanto mais escuro, maior a concentração.](/pesquisas/mcmv-assets/image3.webp)
+![Distribuição espacial das unidades habitacionais do MCMV no Sudeste (2009-2020). Quanto mais escuro, maior a concentração.](./mcmv-assets/image3.webp)
 
 Essa distribuição reflete fatores práticos: onde tem infraestrutura consolidada, fornecedores, mão de obra e demanda qualificada, fica mais viável implementar projetos de grande porte. É natural que municípios com mercado imobiliário ativo tenham atraído mais empreendimentos.
 
@@ -49,13 +49,13 @@ Usei regressão linear para comparar municípios de tamanhos diferentes de forma
 
 ### São Paulo
 
-![Distribuição em São Paulo](/pesquisas/mcmv-assets/image5.webp)
+![Distribuição em São Paulo](./mcmv-assets/image5.webp)
 
 São Paulo mostrou uma distribuição bem distribuída. Cidades médias do interior conseguiram atrair volumes significativos, não só a capital. O mercado imobiliário do estado tem estrutura para operar em diferentes escalas e regiões.
 
 ### Rio de Janeiro
 
-![Distribuição no Rio de Janeiro](/pesquisas/mcmv-assets/image7.webp)
+![Distribuição no Rio de Janeiro](./mcmv-assets/image7.webp)
 
 No Rio, muitos municípios ficaram abaixo do esperado. As particularidades da região metropolitana fluminense (custo de terra, questões fundiárias, geografia acidentada) representam desafios significativos para programas habitacionais de larga escala.
 

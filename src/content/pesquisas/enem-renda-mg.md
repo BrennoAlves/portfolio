@@ -3,7 +3,7 @@ titulo: "Renda e Desempenho no ENEM: O Que os Dados de Minas Gerais Revelam"
 subtitulo: "Análise de 116 mil inscrições no ENEM 2019 mostra como a diferença de renda entre alunos de escolas públicas e privadas se reflete nas notas."
 data: "2020"
 tags: ["Educação", "Data Science", "Python"]
-imagemCapa: "/pesquisas/enem-assets/boxplot.png"
+imagemCapa: "./enem-assets/boxplot.png"
 descricao: "Mineração de dados do ENEM 2019 em MG revela que alunos de renda mais alta têm desempenho até 25% superior. Análise com 116 mil participantes."
 ---
 
@@ -66,7 +66,7 @@ O gráfico abaixo mostra a distribuição de notas por classe social. Cada "caix
 
 **Quanto mais alto o boxplot, melhores as notas daquela classe.**
 
-![Distribuição de notas por classe social](/pesquisas/enem-assets/boxplot.png)
+![Distribuição de notas por classe social](./enem-assets/boxplot.png)
 
 ## O Que Está Por Trás dos Números
 

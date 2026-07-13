@@ -49,6 +49,7 @@
 }
 
 .btn {
+  border-radius: 999px;
   font-family: var(--font-mono);
   font-weight: 500;
   transition:

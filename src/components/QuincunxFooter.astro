@@ -1,16 +1,16 @@
 ---
-// Footer-assinatura: a máquina de Galton emoldurada — do ruído ao padrão
+// footer assinatura, a máquina de Galton com a seção dela
 const ano = new Date().getFullYear();
 ---
 
 <footer class="qf" aria-label="Rodapé">
   <div class="qf-inner qf-head">
     <div>
-      <p class="qf-title">Do ruído ao padrão</p>
+      <p class="qf-title">Cada ponto é aleatório. O conjunto não.</p>
       <p class="qf-sub">
-        Cada ponto cai num passeio aleatório — e a curva normal aparece sozinha.
-        Teorema Central do Limite, ao vivo. Clique na chuva pra despejar pontos;
-        o cursor entorta a amostra.
+        Cada um cai por um caminho sorteado e ainda assim eles montam uma curva
+        normal. É o teorema central do limite acontecendo aqui. Clica na chuva pra
+        soltar mais e mexe o mouse pra entortar a amostra.
       </p>
     </div>
     <ul class="qf-links">
@@ -210,7 +210,7 @@ const ano = new Date().getFullYear();
       g.clearRect(0, 0, w, h);
       const rgb = temaRgb();
 
-      // pinos: agora visíveis — a máquina é a protagonista da seção
+      // pinos agora visíveis, a máquina é a protagonista da seção
       g.fillStyle = `rgba(${rgb}, 0.20)`;
       for (let ri = 0; ri < pegRows.length; ri++) {
         const py = pegRows[ri];

@@ -1,7 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import { TITULO_SITE, DESCRICAO_SITE } from "../consts";
-import BaseLayout from "./BaseLayout.astro";
+import SiteChrome from "./SiteChrome.astro";
 import "../styles/global.css";
 
 export interface Props {
@@ -72,8 +72,8 @@ const ogImage = new URL('/perfil.webp', Astro.site);
     </style>
   </head>
   <body>
-    <BaseLayout>
+    <SiteChrome>
       <slot />
-    </BaseLayout>
+    </SiteChrome>
   </body>
 </html>

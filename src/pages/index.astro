@@ -50,11 +50,15 @@ const skills = [
       <article class="md:flex-row-reverse md:justify-end md:gap-12">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="col-span-2 flex flex-col gap-4 md:gap-6 my-auto">
-            <h1 class="text-3xl">Prazer, Brenno.</h1>
-            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70">
+            <h1 class="text-3xl hero-title">
+              {"Prazer, Brenno.".split(" ").map((palavra, i) => (
+                <span class="palavra" style={`--i: ${i}`}>{palavra}&nbsp;</span>
+              ))}
+            </h1>
+            <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70 hero-in" style="--d: 350ms">
               Trabalho com dados e tecnologia. Fiz meu primeiro curso de programação aos 10 anos. Fui pra Economia por causa da estatística, comecei como estagiário de dados, virei analista e hoje sou sócio na <a class="font-normal text-primary" href="https://www.dataclix.com.br/">DataClix</a>, onde trabalho com dados e gestão de projetos de desenvolvimento. Este site tem alguns desses projetos de estudos. Nas horas vagas, faço pão, tento tocar baixo e cuido da minha gata gorda.
             </p>
-            <div class="nav">
+            <div class="nav hero-in" style="--d: 500ms">
               <ul>
                 <li>
                   <a href="https://www.linkedin.com/in/brennonogueiraalves/" rel="noreferrer" target="_blank" aria-label="LinkedIn do Brenno">
@@ -81,7 +85,7 @@ const skills = [
               </ul>
             </div>
           </div>
-          <div class="mx-auto mt-6 sm:mt-0">
+          <div class="mx-auto mt-6 sm:mt-0 hero-photo" style="--d: 250ms">
             <div class="avatar flex-items-center mx-auto sm:flex-row">
               <div class="w-60 rounded">
                 <img src="/perfil.webp" alt="Foto do Brenno" loading="lazy" decoding="async" />
@@ -93,8 +97,8 @@ const skills = [
 
       <section class="flex flex-col gap-4">
         <div class="flex flex-col gap-3">
-          {skills.map((grupo) => (
-            <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+          {skills.map((grupo, i) => (
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2" data-reveal style={`--reveal-i: ${i}`}>
               <span class="text-xs opacity-50 uppercase tracking-widest w-full sm:w-auto sm:min-w-[10rem]">{grupo.area}</span>
               <div class="flex flex-wrap gap-2">
                 {grupo.items.map((item) => (
@@ -107,7 +111,7 @@ const skills = [
       </section>
 
       <section class="flex flex-col gap-6">
-        <div class="text-center">
+        <div class="text-center" data-reveal>
           <h2 class="text-2xl">Projetos e Pesquisas</h2>
         </div>
 
@@ -147,7 +151,7 @@ const skills = [
           ))}
         </div>
 
-        <div class="flex gap-4 justify-center flex-wrap mt-4">
+        <div class="flex gap-4 justify-center flex-wrap mt-4" data-reveal>
           <a href="/projetos" class="btn btn-outline">Outros Projetos</a>
           <a href="/pesquisas" class="btn btn-outline">Outras Pesquisas</a>
         </div>
@@ -155,3 +159,76 @@ const skills = [
     </div>
   </main>
 </Layout>
+
+<style>
+  /* coreografia de entrada do hero */
+  .hero-title {
+    overflow: hidden;
+  }
+
+  .hero-title .palavra {
+    display: inline-block;
+    transform: translateY(120%);
+    animation: wordUp 700ms var(--ease-out-strong) forwards;
+    animation-delay: calc(var(--i) * 110ms + 80ms);
+  }
+
+  @keyframes wordUp {
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .hero-in {
+    opacity: 0;
+    animation: heroIn 800ms var(--ease-out-strong) forwards;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes heroIn {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .hero-photo {
+    opacity: 0;
+    animation: photoIn 900ms var(--ease-out-strong) forwards;
+    animation-delay: var(--d, 0ms);
+  }
+
+  @keyframes photoIn {
+    from {
+      opacity: 0;
+      transform: scale(0.94) translateY(12px);
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title .palavra {
+      animation: none;
+      transform: none;
+    }
+    .hero-in,
+    .hero-photo {
+      animation-name: heroFadeOnly;
+    }
+    @keyframes heroFadeOnly {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  }
+</style>

@@ -10,6 +10,7 @@ interface Props {
 
 const { titulo, descricao, tags, url, imagemCapa, maxTags } = Astro.props;
 const displayTags = maxTags ? tags.slice(0, maxTags) : tags;
+const slug = url.split('/').filter(Boolean).pop();
 
 // Função para gerar cores consistentes baseadas no nome da tag
 const getTagColor = (tag: string): string => {
@@ -70,7 +71,7 @@ const getTagColor = (tag: string): string => {
   )}
   <div class="card-body p-6 flex flex-col">
     <div class="flex items-start justify-between mb-3">
-      <h2 class="card-title text-xl font-semibold flex-1">{titulo}</h2>
+      <h2 class="card-title text-xl font-semibold flex-1" transition:name={`pesquisa-titulo-${slug}`}>{titulo}</h2>
     </div>
 
     <p class="text-base-content/70 text-sm leading-relaxed mb-4">

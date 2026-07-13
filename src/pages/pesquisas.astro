@@ -28,7 +28,7 @@ const pesquisas = await getCollection('pesquisas');
               />
             </figure>
             <div class="card-body p-6 flex flex-col">
-              <h2 class="card-title text-xl font-semibold">
+              <h2 class="card-title text-xl font-semibold" transition:name={`pesquisa-titulo-${pesquisa.slug}`}>
                 {pesquisa.data.titulo}
               </h2>
 

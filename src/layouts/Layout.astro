@@ -38,6 +38,7 @@ const ogImage = new URL('/perfil.webp', Astro.site);
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <ClientRouter />
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <style is:global>
       /* saída mais rápida que entrada = timing assimétrico */
       ::view-transition-old(root) {

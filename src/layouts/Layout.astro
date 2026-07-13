@@ -39,7 +39,19 @@ const ogImage = new URL('/perfil.webp', Astro.site);
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
     <ClientRouter />
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      (function () {
+        function aplicaTema() {
+          try {
+            var t = localStorage.getItem('tema');
+            if (t) document.documentElement.setAttribute('data-theme', t);
+          } catch (e) {}
+        }
+        aplicaTema();
+        document.addEventListener('astro:after-swap', aplicaTema);
+      })();
+    </script>
     <style is:global>
       /* saída mais rápida que entrada = timing assimétrico */
       ::view-transition-old(root) {

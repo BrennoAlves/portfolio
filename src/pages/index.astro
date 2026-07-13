@@ -50,11 +50,7 @@ const skills = [
       <article class="md:flex-row-reverse md:justify-end md:gap-12">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="col-span-2 flex flex-col gap-4 md:gap-6 my-auto">
-            <h1 class="text-3xl hero-title">
-              {"Prazer, Brenno.".split(" ").map((palavra, i) => (
-                <span class="palavra" style={`--i: ${i}`}>{palavra}&nbsp;</span>
-              ))}
-            </h1>
+            <h1 class="text-3xl hero-title">Prazer, Brenno.</h1>
             <p class="w-auto sm:w-[85%] md:w-[90%] leading-6 text-justify opacity-70 hero-in" style="--d: 350ms">
               Trabalho com dados e tecnologia. Fiz meu primeiro curso de programação aos 10 anos. Fui pra Economia por causa da estatística, comecei como estagiário de dados, virei analista e hoje sou sócio na <a class="font-normal text-primary" href="https://www.dataclix.com.br/">DataClix</a>, onde trabalho com dados e gestão de projetos de desenvolvimento. Este site tem alguns desses projetos de estudos. Nas horas vagas, faço pão, tento tocar baixo e cuido da minha gata gorda.
             </p>
@@ -161,24 +157,6 @@ const skills = [
 </Layout>
 
 <style>
-  /* coreografia de entrada do hero */
-  .hero-title {
-    overflow: hidden;
-  }
-
-  .hero-title .palavra {
-    display: inline-block;
-    transform: translateY(120%);
-    animation: wordUp 700ms var(--ease-out-strong) forwards;
-    animation-delay: calc(var(--i) * 110ms + 80ms);
-  }
-
-  @keyframes wordUp {
-    to {
-      transform: translateY(0);
-    }
-  }
-
   .hero-in {
     opacity: 0;
     animation: heroIn 800ms var(--ease-out-strong) forwards;
@@ -218,10 +196,6 @@ const skills = [
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-title .palavra {
-      animation: none;
-      transform: none;
-    }
     .hero-in,
     .hero-photo {
       animation-name: heroFadeOnly;
@@ -255,3 +229,36 @@ const skills = [
     }
   }
 </style>
+
+<script>
+  // título decodifica de glifos embaralhados, esquerda → direita
+  function scramble() {
+    const el = document.querySelector('.hero-title');
+    if (!(el instanceof HTMLElement) || el.dataset.done) return;
+    el.dataset.done = '1';
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const titulo = el; // narrowing não sobrevive a closures
+    const alvo = el.textContent?.trim() ?? '';
+    if (!alvo) return;
+    const glifos = '01<>[]{}/#$%&*+=~';
+    const dur = 900;
+    const t0 = performance.now();
+    function frame(agora: number) {
+      const p = Math.min(1, (agora - t0) / dur);
+      const travados = Math.floor(alvo.length * p);
+      let saida = '';
+      for (let i = 0; i < alvo.length; i++) {
+        const c = alvo[i];
+        saida += i < travados || c === ' ' || c === ',' || c === '.'
+          ? c
+          : glifos[(Math.random() * glifos.length) | 0];
+      }
+      titulo.textContent = saida;
+      if (p < 1) setTimeout(() => requestAnimationFrame(frame), 35);
+      else titulo.textContent = alvo;
+    }
+    requestAnimationFrame(frame);
+  }
+  scramble();
+  document.addEventListener('astro:page-load', scramble);
+</script>

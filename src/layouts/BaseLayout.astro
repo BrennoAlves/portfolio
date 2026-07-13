@@ -5,6 +5,7 @@ const isPesquisas = pathname.includes('/pesquisas');
 const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vindo';
 ---
 
+<canvas id="data-field" transition:persist="data-field" aria-hidden="true"></canvas>
 <div class="container">
   <header class="header" transition:name="site-header">
     <a href="/" class="logo">{titulo}</a>
@@ -13,6 +14,9 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
         <li><a href="/">Home</a></li>
         <li><a href="/projetos">Projetos</a></li>
         <li><a href="/pesquisas">Pesquisas</a></li>
+        <li>
+          <button id="theme-toggle" data-cuelume-toggle aria-label="Alternar tema claro/escuro">◐</button>
+        </li>
       </ul>
     </nav>
   </header>
@@ -133,6 +137,71 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
     margin: 0 0.5rem 0 0.75rem;
     opacity: 0.4;
   }
+
+  /* campo de dados vivo — atrás de tudo */
+  #data-field {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  #theme-toggle {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.125rem;
+    font-size: 1rem;
+    line-height: 1;
+    color: inherit;
+    transition: transform 400ms var(--ease-out-strong);
+  }
+
+  [data-theme="business"] #theme-toggle {
+    transform: rotate(180deg);
+  }
+
+  /* spotlight que segue o cursor nos cards */
+  @media (hover: hover) and (pointer: fine) {
+    :root .card {
+      position: relative;
+    }
+
+    :root .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(
+        320px circle at var(--mx, 50%) var(--my, 50%),
+        color-mix(in oklch, var(--color-primary) 14%, transparent),
+        transparent 65%
+      );
+      opacity: 0;
+      transition: opacity 300ms ease;
+      pointer-events: none;
+    }
+
+    :root .card:hover::after {
+      opacity: 1;
+    }
+  }
+
+  /* troca de tema: reveal circular a partir do botão */
+  html.theme-switching::view-transition-old(root) {
+    animation: none;
+  }
+
+  html.theme-switching::view-transition-new(root) {
+    animation: themeReveal 500ms var(--ease-out-strong) both;
+    clip-path: circle(0px at var(--reveal-x, 50%) var(--reveal-y, 0%));
+  }
+
+  @keyframes themeReveal {
+    to {
+      clip-path: circle(150vmax at var(--reveal-x, 50%) var(--reveal-y, 0%));
+    }
+  }
   
   /* cards entram quando aparecem no viewport (observer no fim deste arquivo) */
   .js .card-animate {
@@ -218,6 +287,153 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
 <script>
   import { bind } from 'cuelume';
 
+  // ── campo de dados vivo ────────────────────────────────────────────────
+  // ponytail: O(n²) nas linhas (n≤70 → ~2.4k pares/frame); quadtree se crescer
+  function startDataField() {
+    const canvas = document.getElementById('data-field');
+    if (!(canvas instanceof HTMLCanvasElement) || canvas.dataset.on) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    canvas.dataset.on = '1';
+    const cv = canvas; // narrowing não sobrevive a closures
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    const g = ctx;
+
+    const mobile = window.matchMedia('(pointer: coarse)').matches;
+    const N = mobile ? 35 : 70;
+    const pts: { x: number; y: number; vx: number; vy: number }[] = [];
+    const mouse = { x: -99999, y: -99999 };
+    let w = 0, h = 0, dpr = 1;
+
+    function resize() {
+      // viewport 0 acontece em prerender/background — não zerar o canvas
+      if (!window.innerWidth || !window.innerHeight) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = cv.width = window.innerWidth * dpr;
+      h = cv.height = window.innerHeight * dpr;
+      cv.style.width = window.innerWidth + 'px';
+      cv.style.height = window.innerHeight + 'px';
+      seed();
+    }
+
+    function seed() {
+      if (pts.length || !w || !h) return;
+      for (let i = 0; i < N; i++) {
+        pts.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.15 * dpr,
+          vy: (Math.random() - 0.5) * 0.15 * dpr,
+        });
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    if (!mobile) {
+      window.addEventListener('pointermove', (e) => {
+        mouse.x = e.clientX * dpr;
+        mouse.y = e.clientY * dpr;
+      }, { passive: true });
+    }
+
+    let running = true;
+    document.addEventListener('visibilitychange', () => {
+      const estava = running;
+      running = !document.hidden;
+      if (running && !estava) tick();
+    });
+
+    function tick() {
+      if (!running) return;
+      if (!w || !h) {
+        resize();
+        requestAnimationFrame(tick);
+        return;
+      }
+      g.clearRect(0, 0, w, h);
+      const dark = document.documentElement.getAttribute('data-theme') === 'business';
+      const dot = dark ? 'rgba(129, 161, 193, 0.55)' : 'rgba(94, 129, 172, 0.5)';
+      const rgb = dark ? '129, 161, 193' : '94, 129, 172';
+      const LINK = 130 * dpr;
+      const REPEL = 140 * dpr;
+
+      for (const p of pts) {
+        const dxm = p.x - mouse.x;
+        const dym = p.y - mouse.y;
+        const dm = Math.hypot(dxm, dym);
+        if (dm < REPEL && dm > 0.01) {
+          p.vx += (dxm / dm) * 0.03 * dpr;
+          p.vy += (dym / dm) * 0.03 * dpr;
+        }
+        p.vx = p.vx * 0.985 + (Math.random() - 0.5) * 0.004 * dpr;
+        p.vy = p.vy * 0.985 + (Math.random() - 0.5) * 0.004 * dpr;
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+        p.x = Math.max(0, Math.min(w, p.x));
+        p.y = Math.max(0, Math.min(h, p.y));
+        g.fillStyle = dot;
+        g.beginPath();
+        g.arc(p.x, p.y, 1.2 * dpr, 0, 6.2832);
+        g.fill();
+      }
+
+      for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+          const a = pts[i], b = pts[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+          if (d < LINK) {
+            g.strokeStyle = `rgba(${rgb}, ${(1 - d / LINK) * 0.18})`;
+            g.lineWidth = 0.7 * dpr;
+            g.beginPath();
+            g.moveTo(a.x, a.y);
+            g.lineTo(b.x, b.y);
+            g.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
+  }
+  startDataField();
+
+  // ── spotlight nos cards (uma var CSS por card, paint-only) ─────────────
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.addEventListener('pointermove', (e) => {
+      const card = e.target instanceof Element ? e.target.closest('.card') : null;
+      if (!(card instanceof HTMLElement)) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+      card.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+    }, { passive: true });
+  }
+
+  // ── toggle de tema com reveal circular ─────────────────────────────────
+  document.addEventListener('click', (e) => {
+    const btn = e.target instanceof Element ? e.target.closest('#theme-toggle') : null;
+    if (!btn) return;
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'business' ? 'nord' : 'business';
+    try { localStorage.setItem('tema', next); } catch {}
+    const aplica = () => html.setAttribute('data-theme', next);
+    if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      aplica();
+      return;
+    }
+    const r = btn.getBoundingClientRect();
+    html.style.setProperty('--reveal-x', `${r.left + r.width / 2}px`);
+    html.style.setProperty('--reveal-y', `${r.top + r.height / 2}px`);
+    html.classList.add('theme-switching');
+    document.startViewTransition(aplica).finished.finally(() => {
+      html.classList.remove('theme-switching');
+    });
+  });
+
   // sons sutis de interação: nav (tick), botões (press/release), galeria (bloom)
   function decorateSounds() {
     document.querySelectorAll('.nav a').forEach((el) => {
@@ -257,5 +473,6 @@ const titulo = isProjetos ? 'Criando' : isPesquisas ? 'Investigando' : 'Bem-vind
   document.addEventListener('astro:page-load', () => {
     setupReveal();
     decorateSounds();
+    startDataField(); // persist mantém o canvas; isto cobre reload completo
   });
 </script>
